@@ -1,13 +1,13 @@
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { rem } from 'polished';
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import styled from 'styled-components';
 
+import { routes } from 'src/constants/routes';
 import { BasicLayout } from 'src/components/Elements/BasicLayout/BasicLayout';
 import { ButtonElement } from 'src/components/Elements/ButtonElement/ButtonElement';
 import { LoaderElement } from 'src/components/Elements/LoaderElement/LoaderElement';
-import { routes } from 'src/constants/routes';
-import styled from 'styled-components';
 
 const CONFIRM_USER = gql`
   mutation ConfirmUser($token: String!) {
@@ -51,7 +51,7 @@ export const ConfirmUserPage = () => {
 
   return (
     <BasicLayout areChildrenCentered>
-      {false ? (
+      {isLoading ? (
         <LoaderElement isVisible />
       ) : (
         <div>
