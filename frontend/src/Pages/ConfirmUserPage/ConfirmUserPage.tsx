@@ -32,22 +32,22 @@ export const ConfirmUserPage = () => {
   const urlParams = new URLSearchParams(location.search);
   const token = urlParams.get('token');
 
-  // useEffect(() => {
-  //   const confirm = async () => {
-  //     if (!token) {
-  //       return history.push(routes.homePage);
-  //     }
+  useEffect(() => {
+    const confirm = async () => {
+      if (!token) {
+        return history.push(routes.homePage);
+      }
 
-  //     try {
-  //       await confirmUser({ variables: { token } });
-  //       setIsLoading(false);
-  //     } catch (err) {
-  //       history.push(routes.homePage);
-  //     }
-  //   };
+      try {
+        await confirmUser({ variables: { token } });
+        setIsLoading(false);
+      } catch (err) {
+        history.push(routes.homePage);
+      }
+    };
 
-  //   confirm();
-  // }, [token, confirmUser, history]);
+    confirm();
+  }, [token, confirmUser, history]);
 
   return (
     <BasicLayout areChildrenCentered>
