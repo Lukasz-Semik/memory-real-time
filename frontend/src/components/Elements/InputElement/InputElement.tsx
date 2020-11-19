@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react';
 import { rem } from 'polished';
-import { styles } from 'src/styles';
 import styled from 'styled-components';
+
+import { styles } from 'src/styles';
 
 const Input = styled.input`
   display: block;

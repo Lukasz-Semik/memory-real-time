@@ -9,12 +9,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev:fe": "yarn workspace frontend start",
-    "dev:be": "yarn workspace backend start:dev",
+    "frontend": "yarn workspace frontend",
+    "dev:fe": "yarn frontend start",
+    "dev:be": "yarn backend start:dev",
     "typeorm": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js --config /src/ormconfig.ts",
-    "migrate:create": "yarn workspace backend typeorm:migrate",
-    "migrate:run": "yarn workspace backend typeorm:run",
-    "lint:be": "yarn workspace backend lint"
+    "migrate:create": "yarn backend typeorm:migrate",
+    "migrate:run": "yarn backend typeorm:run",
+    "lint:be": "yarn backend lint"
   },
   "engines": {
     "node": "12.16.1"

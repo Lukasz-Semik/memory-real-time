@@ -5,6 +5,7 @@ import { gql, useMutation } from '@apollo/client';
 import { rem } from 'polished';
 
 import { setToLocalStorage } from 'src/helpers/localStorage';
+import { MAIN_STORAGE_KEY } from 'src/constants/misc';
 import { routes } from 'src/constants/routes';
 
 import { ButtonElement } from '../Elements/ButtonElement/ButtonElement';
@@ -30,11 +31,11 @@ export const SignInForm = () => {
       const response = await login({
         variables: { email: data.email, password: data.password },
       });
-      console.log(response);
+
       const token = response.data?.login?.accessToken;
 
       if (response.data?.login?.accessToken) {
-        setToLocalStorage('battleships_token', token);
+        setToLocalStorage(MAIN_STORAGE_KEY, token);
         history.push(routes.dashboardPage);
       }
     } catch (err) {

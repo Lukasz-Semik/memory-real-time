@@ -1,7 +1,8 @@
 import React from 'react';
 import { darken, rem } from 'polished';
-import { styles } from 'src/styles';
 import styled from 'styled-components';
+
+import { styles } from 'src/styles';
 
 const Button = styled.button<{ btnWidth: string }>`
   background-color: ${styles.colors.mainMint};
@@ -19,6 +20,19 @@ const Button = styled.button<{ btnWidth: string }>`
   }
 `;
 
-export const ButtonElement = ({ children, btnWidth }) => {
-  return <Button btnWidth={btnWidth}>{children}</Button>;
+interface Props {
+  btnWidth?: string;
+  onClick?: () => void;
+}
+
+export const ButtonElement = ({
+  children,
+  btnWidth,
+  onClick,
+}: React.PropsWithChildren<Props>) => {
+  return (
+    <Button onClick={onClick} btnWidth={btnWidth}>
+      {children}
+    </Button>
+  );
 };

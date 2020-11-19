@@ -18,9 +18,11 @@ module.exports = {
           ['^\\u0000'],
           ['^react', '^@?\\w'],
           [
+            '^(src/styles)(/.*|$)',
             '^(src/store)(/.*|$)',
             '^(src/helpers)(/.*|$)',
             '^(src/hooks)(/.*|$)',
+            '^(src/types)(/.*|$)',
             '^(src/constants)(/.*|$)',
             '^(src/components)(/.*|$)',
             '^[^.]',
