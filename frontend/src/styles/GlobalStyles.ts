@@ -15,7 +15,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     overflow: hidden;
-    background-color: #F7971E;
+    background-color: ${styles.colors.mainOrange};
     color: ${styles.colors.black};
   }
 

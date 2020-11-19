@@ -1,4 +1,5 @@
 import React from 'react';
+import { styles } from 'src/styles';
 import styled, { css } from 'styled-components';
 
 const Heading = styled.h1`
@@ -12,8 +13,12 @@ const Wrapper = styled.div<{ areChildrenCentered?: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background: #f7971e;
-  background: linear-gradient(to top, #f7971e, #ffd200);
+  background: ${styles.colors.mainOrange};
+  background: linear-gradient(
+    to top,
+    ${styles.colors.mainOrange},
+    ${styles.colors.mainYellow}
+  );
 
   ${({ areChildrenCentered }) =>
     areChildrenCentered &&
