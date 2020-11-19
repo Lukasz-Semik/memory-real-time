@@ -5,10 +5,12 @@ import styled from 'styled-components';
 
 const Button = styled.button<{ btnWidth: string }>`
   background-color: ${styles.colors.mainMint};
-  padding: ${rem(10)} 0;
+  height: ${rem(40)};
+  border-radius: ${rem(20)};
   width: ${({ btnWidth }) => btnWidth};
   color: ${styles.colors.white};
   font-size: ${rem(20)};
+  box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.25);
   transition: background-color 0.5s ease;
 
   &:hover,

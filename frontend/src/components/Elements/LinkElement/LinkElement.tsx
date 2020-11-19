@@ -4,7 +4,7 @@ import { styles } from 'src/styles';
 import styled from 'styled-components';
 
 const LinkStyled = styled(Link)`
-  color: ${styles.colors.white};
+  color: ${styles.colors.black};
 
   &:hover,
   &:focus {

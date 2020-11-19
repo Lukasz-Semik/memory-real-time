@@ -10,6 +10,7 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
+    "no-console": 1,
     'simple-import-sort/sort': [
       1,
       {

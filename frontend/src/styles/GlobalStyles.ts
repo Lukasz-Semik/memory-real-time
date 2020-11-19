@@ -15,8 +15,8 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     overflow: hidden;
-    background-color: #122;
-    color: ${styles.colors.white};
+    background-color: #F7971E;
+    color: ${styles.colors.black};
   }
 
   a {

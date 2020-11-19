@@ -7,8 +7,8 @@ const Input = styled.input`
   display: block;
   background-color: transparent;
   border: 0;
-  border-bottom: 1px solid ${styles.colors.white};
-  color: ${styles.colors.white};
+  border-bottom: 1px solid ${styles.colors.black};
+  color: ${styles.colors.black};
   font-size: ${rem(20)};
   width: 100%;
   transition: color 0.5s ease, border-color 0.5s ease;
@@ -17,8 +17,8 @@ const Input = styled.input`
 
   &:hover,
   &:focus {
-    color: ${styles.colors.mainOrange};
-    border-color: ${styles.colors.mainOrange};
+    color: ${styles.colors.mainMint};
+    border-color: ${styles.colors.mainMint};
   }
 `;
 
