@@ -1,6 +1,7 @@
 import React from 'react';
-import { styles } from 'src/styles';
 import styled, { css } from 'styled-components';
+
+import { styles } from 'src/styles';
 
 const Heading = styled.h1`
   margin: 0;
@@ -30,7 +31,7 @@ const Wrapper = styled.div<{ areChildrenCentered?: boolean }>`
 `;
 
 interface Props {
-  title: string;
+  title?: string;
   areChildrenCentered?: boolean;
 }
 
@@ -41,7 +42,7 @@ export const BasicLayout = ({
 }: React.PropsWithChildren<Props>) => (
   <Wrapper areChildrenCentered={areChildrenCentered}>
     <div>
-      <Heading>{title}</Heading>
+      {title && <Heading>{title}</Heading>}
       {children}
     </div>
   </Wrapper>

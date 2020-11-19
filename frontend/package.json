@@ -20,6 +20,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.9.2",
+    "react-loader-spinner": "^3.1.14",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-loader-spinner": "^3.1.2",
     "eslint-plugin-simple-import-sort": "^5.0.3",
     "styled-components.macro": "^1.0.0"
   }

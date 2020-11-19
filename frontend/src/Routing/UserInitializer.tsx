@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { gql, useLazyQuery } from '@apollo/client';
 import { isEmpty } from 'lodash';
 
+import { MAIN_STORAGE_KEY } from 'src/constants/misc';
 import { routes } from 'src/constants/routes';
 
 import { getFromLocalStorage } from '../helpers/localStorage';
@@ -21,50 +22,79 @@ const FETCH_USER = gql`
   }
 `;
 
-export const UserInitializer = () => {
-  const [shouldVerify, setShouldVerify] = useState(false);
-  const cachedToken = getFromLocalStorage<string>('battleships_token');
-  const history = useHistory();
+interface RenderProps {
+  isInitalized: boolean;
+}
+
+export const UserInitializer = ({
+  children,
+}: WithRenderChildrenProps<RenderProps>) => {
+  const [isInitalized, setIsInitialized] = useState(false);
   const location = useLocation();
-  const currentUser = useGetCurrentUser();
+  const history = useHistory();
   const dispatch = useDispatch();
-  const isOnLandingPage = getIsOnPage(location.pathname, routes.homePage);
-  const isOnSignUpPage = getIsOnPage(location.pathname, routes.signUpPage);
-  const [fetchUser, { loading, data }] = useLazyQuery(FETCH_USER);
+
+  const cachedToken = getFromLocalStorage<string>(MAIN_STORAGE_KEY);
+
+  const currentUser = useGetCurrentUser();
+  const [fetchUser, { data }] = useLazyQuery(FETCH_USER);
   const fetchedUser = data?.me;
 
-  useEffect(() => {
-    if (isEmpty(currentUser)) {
-      if (!cachedToken && !isOnSignUpPage) {
-        history.push(routes.homePage);
-      } else {
-        fetchUser();
-        setShouldVerify(true);
-      }
-    }
-  }, [currentUser, cachedToken, history, fetchUser, isOnSignUpPage]);
+  const isOnDashboardPage = useMemo(
+    () => getIsOnPage(location.pathname, routes.dashboardPage),
+    [location]
+  );
 
   useEffect(() => {
-    if (shouldVerify && !loading) {
-      if (fetchedUser) {
-        dispatch(setCurrentUser(fetchedUser));
-
-        if (isOnLandingPage) {
-          history.push(routes.dashboardPage);
-        }
-      } else if (!isOnLandingPage && !isOnSignUpPage) {
-        history.push(routes.homePage);
-      }
+    if (isInitalized) {
+      return;
     }
+
+    if (isOnDashboardPage) {
+      if (!cachedToken) {
+        setIsInitialized(true);
+        return history.push(routes.homePage);
+      }
+
+      if (isEmpty(currentUser)) {
+        return fetchUser();
+      }
+
+      return setIsInitialized(true);
+    }
+
+    if (!isEmpty(currentUser)) {
+      setIsInitialized(true);
+      return history.push(routes.dashboardPage);
+    }
+
+    if (cachedToken) {
+      return fetchUser();
+    }
+
+    setIsInitialized(true);
   }, [
-    shouldVerify,
-    loading,
+    isOnDashboardPage,
+    cachedToken,
+    currentUser,
+    fetchUser,
     history,
-    isOnLandingPage,
-    isOnSignUpPage,
-    dispatch,
-    fetchedUser,
+    isInitalized,
   ]);
 
-  return null;
+  useEffect(() => {
+    if (!isEmpty(fetchedUser)) {
+      dispatch(setCurrentUser(fetchedUser));
+      setIsInitialized(true);
+      history.push(routes.dashboardPage);
+    }
+  }, [fetchedUser, dispatch, history]);
+
+  return (
+    <>
+      {children({
+        isInitalized,
+      })}
+    </>
+  );
 };
