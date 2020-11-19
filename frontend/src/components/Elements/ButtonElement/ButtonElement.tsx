@@ -20,6 +20,19 @@ const Button = styled.button<{ btnWidth: string }>`
   }
 `;
 
-export const ButtonElement = ({ children, btnWidth }) => {
-  return <Button btnWidth={btnWidth}>{children}</Button>;
+interface Props {
+  btnWidth?: string;
+  onClick?: () => void;
+}
+
+export const ButtonElement = ({
+  children,
+  btnWidth,
+  onClick,
+}: React.PropsWithChildren<Props>) => {
+  return (
+    <Button onClick={onClick} btnWidth={btnWidth}>
+      {children}
+    </Button>
+  );
 };
