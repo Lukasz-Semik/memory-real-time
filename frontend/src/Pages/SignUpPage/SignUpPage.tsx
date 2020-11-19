@@ -4,7 +4,7 @@ import { BasicLayout } from 'src/components/Elements/BasicLayout/BasicLayout';
 import { SignUpForm } from 'src/components/SignForms/SignUpForm';
 
 export const SignUpPage = () => (
-  <BasicLayout title="Sign up">
+  <BasicLayout title="Sign up" areChildrenCentered>
     <SignUpForm />
   </BasicLayout>
 );

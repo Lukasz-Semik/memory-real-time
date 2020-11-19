@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { rem } from 'polished';
 
-import { setToLocalStorage } from 'src/helpers/localStorage';
 import { routes } from 'src/constants/routes';
 
 import { ButtonElement } from '../Elements/ButtonElement/ButtonElement';
