@@ -10,6 +10,7 @@
   "license": "MIT",
   "scripts": {
     "frontend": "yarn workspace frontend",
+    "backend": "yarn workspace backend",
     "dev:fe": "yarn frontend start",
     "dev:be": "yarn backend start:dev",
     "typeorm": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js --config /src/ormconfig.ts",

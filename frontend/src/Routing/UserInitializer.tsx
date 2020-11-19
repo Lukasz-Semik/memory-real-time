@@ -23,13 +23,13 @@ const FETCH_USER = gql`
 `;
 
 interface RenderProps {
-  isInitalized: boolean;
+  isInitialized: boolean;
 }
 
 export const UserInitializer = ({
   children,
 }: WithRenderChildrenProps<RenderProps>) => {
-  const [isInitalized, setIsInitialized] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export const UserInitializer = ({
   );
 
   useEffect(() => {
-    if (isInitalized) {
+    if (isInitialized) {
       return;
     }
 
@@ -79,7 +79,7 @@ export const UserInitializer = ({
     currentUser,
     fetchUser,
     history,
-    isInitalized,
+    isInitialized,
   ]);
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export const UserInitializer = ({
   return (
     <>
       {children({
-        isInitalized,
+        isInitialized,
       })}
     </>
   );

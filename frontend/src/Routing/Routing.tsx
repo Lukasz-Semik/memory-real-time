@@ -26,8 +26,8 @@ export const Routing = () => {
   return (
     <BrowserRouter>
       <UserInitializer>
-        {({ isInitalized }) =>
-          isInitalized ? (
+        {({ isInitialized }) =>
+          isInitialized ? (
             <Switch>
               <Route path={routes.dashboardPage}>
                 <DashboardPage />
