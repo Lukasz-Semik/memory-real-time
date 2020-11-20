@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { gql, useLazyQuery } from '@apollo/client';
@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 
 import { MAIN_STORAGE_KEY } from 'src/constants/misc';
 import { routes } from 'src/constants/routes';
+import { notifyError } from 'src/components/Elements/ToastElement';
 
 import { getFromLocalStorage } from '../helpers/localStorage';
 import { getIsOnPage } from '../helpers/utils';
@@ -37,7 +38,7 @@ export const UserInitializer = ({
   const cachedToken = getFromLocalStorage<string>(MAIN_STORAGE_KEY);
 
   const currentUser = useGetCurrentUser();
-  const [fetchUser, { data }] = useLazyQuery(FETCH_USER);
+  const [fetchUser, { data, error }] = useLazyQuery(FETCH_USER);
   const fetchedUser = data?.me;
 
   const isOnDashboardPage = useMemo(
@@ -45,39 +46,51 @@ export const UserInitializer = ({
     [location]
   );
 
+  const fetch = useCallback(async () => {
+    try {
+      await fetchUser();
+    } catch (err) {
+      notifyError();
+    }
+  }, [fetchUser]);
+
   useEffect(() => {
-    if (isInitialized) {
-      return;
-    }
+    const initialize = () => {
+      if (isInitialized) {
+        return;
+      }
 
-    if (isOnDashboardPage) {
-      if (!cachedToken) {
+      if (isOnDashboardPage) {
+        if (!cachedToken) {
+          setIsInitialized(true);
+          return history.push(routes.homePage);
+        }
+
+        if (isEmpty(currentUser)) {
+          return fetch();
+        }
+
+        return setIsInitialized(true);
+      }
+
+      if (!isEmpty(currentUser)) {
         setIsInitialized(true);
-        return history.push(routes.homePage);
+        return history.push(routes.dashboardPage);
       }
 
-      if (isEmpty(currentUser)) {
-        return fetchUser();
+      if (cachedToken) {
+        return fetch();
       }
 
-      return setIsInitialized(true);
-    }
-
-    if (!isEmpty(currentUser)) {
       setIsInitialized(true);
-      return history.push(routes.dashboardPage);
-    }
+    };
 
-    if (cachedToken) {
-      return fetchUser();
-    }
-
-    setIsInitialized(true);
+    initialize();
   }, [
     isOnDashboardPage,
     cachedToken,
     currentUser,
-    fetchUser,
+    fetch,
     history,
     isInitialized,
   ]);
@@ -89,6 +102,15 @@ export const UserInitializer = ({
       history.push(routes.dashboardPage);
     }
   }, [fetchedUser, dispatch, history]);
+
+  useEffect(() => {
+    if (error?.message === 'Unauthorized') {
+      notifyError('Your session is over');
+      localStorage.removeItem(MAIN_STORAGE_KEY);
+      history.push(routes.homePage);
+      setIsInitialized(true);
+    }
+  }, [error, history]);
 
   return (
     <>
