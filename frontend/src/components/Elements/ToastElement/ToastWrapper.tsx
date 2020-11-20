@@ -5,9 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
-const Wrapper = styled(ToastContainer).attrs({
-  // custom props
-})`
+const Wrapper = styled(ToastContainer)`
   .Toastify__toast-container {
   }
   .Toastify__toast {
