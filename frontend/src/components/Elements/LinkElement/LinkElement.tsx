@@ -1,18 +1,25 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { styles } from 'src/styles';
 
-const LinkStyled = styled(Link)`
+const activeClassName = 'active-link';
+
+const LinkStyled = styled(NavLink)`
   color: ${styles.colors.black};
 
   &:hover,
-  &:focus {
+  &:focus,
+  &.${activeClassName} {
     text-decoration: underline;
   }
 `;
 
 export const LinkElement = ({ children, path }) => {
-  return <LinkStyled to={path}>{children}</LinkStyled>;
+  return (
+    <LinkStyled activeClassName={activeClassName} to={path} exact>
+      {children}
+    </LinkStyled>
+  );
 };

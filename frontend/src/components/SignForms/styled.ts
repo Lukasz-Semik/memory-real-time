@@ -3,7 +3,8 @@ import styled from 'styled-components';
 
 export const FormStyled = styled.form`
   display: block;
-  width: ${rem(500)};
+  width: 90%;
+  max-width: ${rem(500)};
   margin: ${rem(20)} auto 0 auto;
 `;
 
@@ -14,6 +15,7 @@ export const InputWrapper = styled.div`
 export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: ${rem(40)};
   margin-bottom: ${rem(10)};
 `;
 

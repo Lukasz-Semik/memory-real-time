@@ -56,10 +56,6 @@ export const UserInitializer = ({
 
   useEffect(() => {
     const initialize = () => {
-      if (isInitialized) {
-        return;
-      }
-
       if (isOnDashboardPage) {
         if (!cachedToken) {
           setIsInitialized(true);

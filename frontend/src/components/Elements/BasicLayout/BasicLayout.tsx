@@ -21,6 +21,10 @@ const Wrapper = styled.div<{ areChildrenCentered?: boolean }>`
     ${styles.colors.mainYellow}
   );
 
+  > div {
+    width: 100%;
+  }
+
   ${({ areChildrenCentered }) =>
     areChildrenCentered &&
     css`
