@@ -1,5 +1,6 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { PubSub } from 'graphql-subscriptions';
 import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
 import { UserEntity } from 'src/entities/user.entity';
@@ -10,6 +11,8 @@ import { LoginDto } from './dto/login.dto';
 import { UserDto } from './dto/user.dto';
 import { CreateUserInput } from './inputs';
 import { UserService } from './user.service';
+
+const pubSub = new PubSub();
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -44,5 +47,26 @@ export class UserResolver {
   @Mutation(() => UserDto)
   async confirmUser(@Args('token') token: string) {
     return this.userService.confirmUser(token);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
+  async inviteFriend(
+    @Args('email') email: string,
+    @CurrentUserId() userId: string
+  ) {
+    const newInvetersIds = await this.userService.inviteUserToFriends(
+      email,
+      userId
+    );
+
+    pubSub.publish('friendInvited', { friendInvited: newInvetersIds });
+
+    return true;
+  }
+
+  @Subscription(() => [String])
+  friendInvited() {
+    return pubSub.asyncIterator('friendInvited');
   }
 }

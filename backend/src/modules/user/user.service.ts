@@ -90,4 +90,29 @@ export class UserService {
 
     return omit(confirmedUser, 'password');
   }
+
+  async inviteUserToFriends(email: string, currentUserId: string) {
+    const invitedUser = await this.userRepository.findOne({ email });
+
+    if (!invitedUser) {
+      throwError(HttpStatus.NOT_FOUND, { email: 'not exists' });
+    }
+
+    const currentUser = await this.userRepository.findOne(currentUserId);
+
+    await this.userRepository.save({
+      ...currentUser,
+      invitedFriendsIds: [
+        ...(currentUser.invitedFriendsIds || []),
+        invitedUser.id,
+      ],
+    });
+
+    const updatedInvitedUser = await this.userRepository.save({
+      ...invitedUser,
+      invitersIds: [...(invitedUser.invitersIds || []), currentUser.id],
+    });
+
+    return updatedInvitedUser.invitersIds;
+  }
 }

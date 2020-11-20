@@ -20,10 +20,15 @@ type Mutation {
   login(password: String!, email: String!): LoginDto!
   createUser(data: CreateUserInput!): UserDto!
   confirmUser(token: String!): UserDto!
+  inviteFriend(email: String!): Boolean!
 }
 
 input CreateUserInput {
   email: String!
   password: String!
   nick: String!
+}
+
+type Subscription {
+  friendInvited: [String!]!
 }

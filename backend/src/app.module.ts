@@ -18,6 +18,7 @@ import { TokenModule } from './modules/utils/token/token.module';
     UserModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gpl',
+      installSubscriptionHandlers: true,
       context: ({ req }) => ({ req }),
     }),
   ],
