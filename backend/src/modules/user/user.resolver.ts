@@ -55,18 +55,22 @@ export class UserResolver {
     @Args('email') email: string,
     @CurrentUserId() userId: string
   ) {
-    const newInvetersIds = await this.userService.inviteUserToFriends(
+    const newInvetedFriendsIds = await this.userService.inviteUserToFriends(
       email,
       userId
     );
 
-    pubSub.publish('friendInvited', { friendInvited: newInvetersIds });
+    pubSub.publish('friendInvited', { friendInvited: newInvetedFriendsIds });
 
     return true;
   }
 
-  @Subscription(() => [String])
-  friendInvited() {
+  @Subscription(() => [String], {
+    filter(this: any, payload, variables) {
+      return payload.friendInvited.includes(variables.id);
+    },
+  })
+  friendInvited(@Args('id') id: string) {
     return pubSub.asyncIterator('friendInvited');
   }
 }

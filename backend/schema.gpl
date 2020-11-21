@@ -30,5 +30,5 @@ input CreateUserInput {
 }
 
 type Subscription {
-  friendInvited: [String!]!
+  friendInvited(id: String!): [String!]!
 }

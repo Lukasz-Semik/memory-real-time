@@ -100,7 +100,7 @@ export class UserService {
 
     const currentUser = await this.userRepository.findOne(currentUserId);
 
-    await this.userRepository.save({
+    const currentUserUpdated = await this.userRepository.save({
       ...currentUser,
       invitedFriendsIds: [
         ...(currentUser.invitedFriendsIds || []),
@@ -108,11 +108,11 @@ export class UserService {
       ],
     });
 
-    const updatedInvitedUser = await this.userRepository.save({
+    await this.userRepository.save({
       ...invitedUser,
       invitersIds: [...(invitedUser.invitersIds || []), currentUser.id],
     });
 
-    return updatedInvitedUser.invitersIds;
+    return currentUserUpdated.invitedFriendsIds;
   }
 }
