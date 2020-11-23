@@ -27,7 +27,7 @@ export class UserService {
       const user = await this.userRepository.findOne(id);
 
       if (!user) {
-        throwError(HttpStatus.NOT_FOUND, { email: 'email not exists' });
+        throwError(HttpStatus.NOT_FOUND, { msg: 'email not exists' });
       }
 
       return user;
@@ -76,11 +76,11 @@ export class UserService {
     const existingUser = await this.userRepository.findOne({ email });
 
     if (isEmpty(existingUser)) {
-      throwError(HttpStatus.NOT_FOUND, { email: 'not exists' });
+      throwError(HttpStatus.NOT_FOUND, { msg: 'email not exists' });
     }
 
     if (existingUser.isVerified) {
-      throwError(HttpStatus.CONFLICT, { email: 'already verified' });
+      throwError(HttpStatus.CONFLICT, { msg: 'email already verified' });
     }
 
     const confirmedUser = await this.userRepository.save({
@@ -95,12 +95,16 @@ export class UserService {
     const invitedUser = await this.userRepository.findOne({ email });
 
     if (!invitedUser) {
-      throwError(HttpStatus.NOT_FOUND, { email: 'not exists' });
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
     }
 
     const currentUser = await this.userRepository.findOne(currentUserId);
 
-    const currentUserUpdated = await this.userRepository.save({
+    if ((currentUser.invitedFriendsIds || []).includes(invitedUser.id)) {
+      throwError(HttpStatus.BAD_REQUEST, { msg: 'user already invited ' });
+    }
+
+    await this.userRepository.save({
       ...currentUser,
       invitedFriendsIds: [
         ...(currentUser.invitedFriendsIds || []),
@@ -113,6 +117,17 @@ export class UserService {
       invitersIds: [...(invitedUser.invitersIds || []), currentUser.id],
     });
 
-    return currentUserUpdated.invitedFriendsIds;
+    return {
+      invitedUser: {
+        id: invitedUser.id,
+        nick: invitedUser.nick,
+        email: invitedUser.email,
+      },
+      inviter: {
+        id: currentUser.id,
+        nick: currentUser.nick,
+        email: currentUser.email,
+      },
+    };
   }
 }

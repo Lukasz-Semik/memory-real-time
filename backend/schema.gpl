@@ -2,14 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type LoginDto {
-  accessToken: String!
-}
-
 type UserDto {
   id: String!
   email: String!
   nick: String!
+}
+
+type FriendInvitedDto {
+  invitedUserId: String!
+  inviter: UserDto!
+}
+
+type LoginDto {
+  accessToken: String!
 }
 
 type Query {
@@ -20,7 +25,7 @@ type Mutation {
   login(password: String!, email: String!): LoginDto!
   createUser(data: CreateUserInput!): UserDto!
   confirmUser(token: String!): UserDto!
-  inviteFriend(email: String!): Boolean!
+  inviteFriend(email: String!): UserDto!
 }
 
 input CreateUserInput {
@@ -30,5 +35,5 @@ input CreateUserInput {
 }
 
 type Subscription {
-  friendInvited(id: String!): [String!]!
+  friendInvited(id: String!): FriendInvitedDto!
 }

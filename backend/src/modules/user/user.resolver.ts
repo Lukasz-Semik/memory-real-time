@@ -7,6 +7,7 @@ import { UserEntity } from 'src/entities/user.entity';
 
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { FriendInvitedDto } from './dto/friend-invited.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserDto } from './dto/user.dto';
 import { CreateUserInput } from './inputs';
@@ -49,25 +50,30 @@ export class UserResolver {
     return this.userService.confirmUser(token);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => UserDto)
   @UseGuards(JwtAuthGuard)
   async inviteFriend(
     @Args('email') email: string,
     @CurrentUserId() userId: string
   ) {
-    const newInvetedFriendsIds = await this.userService.inviteUserToFriends(
+    const { invitedUser, inviter } = await this.userService.inviteUserToFriends(
       email,
       userId
     );
 
-    pubSub.publish('friendInvited', { friendInvited: newInvetedFriendsIds });
+    pubSub.publish('friendInvited', {
+      friendInvited: {
+        invitedUserId: invitedUser.id,
+        inviter,
+      },
+    });
 
-    return true;
+    return invitedUser;
   }
 
-  @Subscription(() => [String], {
+  @Subscription(() => FriendInvitedDto, {
     filter(this: any, payload, variables) {
-      return payload.friendInvited.includes(variables.id);
+      return payload.friendInvited.invitedUserId === variables.id;
     },
   })
   friendInvited(@Args('id') id: string) {
