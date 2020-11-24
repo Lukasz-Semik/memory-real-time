@@ -42,7 +42,7 @@ export const UserInitializer = ({
   const fetchedUser = data?.me;
 
   const isOnDashboardPage = useMemo(
-    () => getIsOnPage(location.pathname, routes.dashboardPage),
+    () => getIsOnPage(location.pathname, routes.dashboardPage()),
     [location]
   );
 
@@ -59,7 +59,7 @@ export const UserInitializer = ({
       if (isOnDashboardPage) {
         if (!cachedToken) {
           setIsInitialized(true);
-          return history.push(routes.homePage);
+          return history.push(routes.homePage());
         }
 
         if (isEmpty(currentUser)) {
@@ -71,7 +71,7 @@ export const UserInitializer = ({
 
       if (!isEmpty(currentUser)) {
         setIsInitialized(true);
-        return history.push(routes.dashboardPage);
+        return history.push(routes.dashboardPage());
       }
 
       if (cachedToken) {
@@ -95,7 +95,7 @@ export const UserInitializer = ({
     if (!isEmpty(fetchedUser)) {
       dispatch(setCurrentUser(fetchedUser));
       setIsInitialized(true);
-      history.push(routes.dashboardPage);
+      history.push(routes.dashboardPage());
     }
   }, [fetchedUser, dispatch, history]);
 
@@ -103,7 +103,7 @@ export const UserInitializer = ({
     if (error?.message === 'Unauthorized') {
       notifyError('Your session is over');
       localStorage.removeItem(MAIN_STORAGE_KEY);
-      history.push(routes.homePage);
+      history.push(routes.homePage());
       setIsInitialized(true);
     }
   }, [error, history]);

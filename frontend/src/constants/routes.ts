@@ -1,7 +1,8 @@
 export const routes = {
-  homePage: '/',
-  dashboardPage: '/dashboard',
-  inviteFriend: '/dashboard/invite-friend',
-  signUpPage: '/sign-up',
-  confirmUserPage: '/confirm-user',
+  homePage: () => '/',
+  dashboardPage: () => '/dashboard',
+  inviteFriend: () => '/dashboard/invite-friend',
+  friends: () => '/dashboard/friends',
+  signUpPage: () => '/sign-up',
+  confirmUserPage: () => '/confirm-user',
 };

@@ -35,7 +35,7 @@ export const SignUpForm = () => {
       });
 
       if (response.data?.createUser?.nick) {
-        history.push(routes.homePage);
+        history.push(routes.homePage());
       }
     } catch (err) {
       // TODO: later

@@ -24,6 +24,7 @@ module.exports = {
             '^(src/hooks)(/.*|$)',
             '^(src/types)(/.*|$)',
             '^(src/constants)(/.*|$)',
+            '^(src/features)(/.*|$)',
             '^(src/components)(/.*|$)',
             '^[^.]',
           ],

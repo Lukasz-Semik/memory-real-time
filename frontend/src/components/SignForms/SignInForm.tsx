@@ -36,7 +36,7 @@ export const SignInForm = () => {
 
       if (response.data?.login?.accessToken) {
         setToLocalStorage(MAIN_STORAGE_KEY, token);
-        history.push(routes.dashboardPage);
+        history.push(routes.dashboardPage());
       }
     } catch (err) {
       // TODO: later

@@ -1,10 +1,11 @@
-import { rem } from 'polished';
 import React from 'react';
-import { LinkElement } from 'src/components/Elements/LinkElement/LinkElement';
-import { routes } from 'src/constants/routes';
-import { useGetCurrentUser } from 'src/store/users/selectors';
-import { styles } from 'src/styles';
+import { rem } from 'polished';
 import styled from 'styled-components';
+
+import { styles } from 'src/styles';
+import { useGetCurrentUser } from 'src/store/users/selectors';
+import { routes } from 'src/constants/routes';
+import { LinkElement } from 'src/components/Elements/LinkElement/LinkElement';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -33,10 +34,13 @@ export const SideBar = () => {
     <Wrapper>
       <UserName>{currentUser.nick}</UserName>
       <div>
-        <LinkElement path={routes.dashboardPage}>Main</LinkElement>
+        <LinkElement path={routes.dashboardPage()}>Main</LinkElement>
       </div>
       <div>
-        <LinkElement path={routes.inviteFriend}>InviteFriend</LinkElement>
+        <LinkElement path={routes.friends()}>Friends</LinkElement>
+      </div>
+      <div>
+        <LinkElement path={routes.inviteFriend()}>InviteFriend</LinkElement>
       </div>
     </Wrapper>
   );
