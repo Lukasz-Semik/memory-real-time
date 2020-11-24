@@ -8,6 +8,15 @@ type UserDto {
   nick: String!
 }
 
+type CurrentUserDto {
+  id: String!
+  email: String!
+  nick: String!
+  friendsIds: [String!]
+  invitedFriendsIds: [String!]
+  invitersIds: [String!]
+}
+
 type FriendInvitedDto {
   invitedUserId: String!
   inviter: UserDto!
@@ -18,7 +27,7 @@ type LoginDto {
 }
 
 type Query {
-  me: UserDto!
+  me: CurrentUserDto!
 }
 
 type Mutation {
