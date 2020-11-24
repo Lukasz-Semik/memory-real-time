@@ -23,7 +23,11 @@ export class UserResolver {
   async me(@CurrentUserId() userId: string) {
     const user = await this.userService.getUser(userId);
 
-    return user;
+    return {
+      email: user.email,
+      nick: user.nick,
+      id: user.id,
+    };
   }
 
   @Mutation(() => LoginDto)

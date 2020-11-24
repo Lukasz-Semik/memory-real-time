@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,6 +29,15 @@ export class UserEntity {
     default: false,
   })
   public isVerified: boolean;
+
+  @Column({ type: 'varchar', array: true, nullable: true })
+  public friendsIds: string[];
+
+  @Column({ type: 'varchar', array: true, nullable: true })
+  public invitedFriendsIds: string[];
+
+  @Column({ type: 'varchar', array: true, nullable: true })
+  public invitersIds: string[];
 
   @CreateDateColumn({
     type: 'timestamp',

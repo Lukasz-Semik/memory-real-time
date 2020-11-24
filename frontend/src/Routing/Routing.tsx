@@ -29,19 +29,19 @@ export const Routing = () => {
         {({ isInitialized }) =>
           isInitialized ? (
             <Switch>
-              <Route path={routes.dashboardPage}>
+              <Route path={routes.dashboardPage()}>
                 <DashboardPage />
               </Route>
 
-              <Route path={routes.signUpPage}>
+              <Route path={routes.signUpPage()}>
                 <SignUpPage />
               </Route>
 
-              <Route path={routes.confirmUserPage}>
+              <Route path={routes.confirmUserPage()}>
                 <ConfirmUserPage />
               </Route>
 
-              <Route path={routes.homePage}>
+              <Route path={routes.homePage()}>
                 <HomePage />
               </Route>
             </Switch>

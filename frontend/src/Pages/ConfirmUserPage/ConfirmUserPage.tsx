@@ -35,14 +35,14 @@ export const ConfirmUserPage = () => {
   useEffect(() => {
     const confirm = async () => {
       if (!token) {
-        return history.push(routes.homePage);
+        return history.push(routes.homePage());
       }
 
       try {
         await confirmUser({ variables: { token } });
         setIsLoading(false);
       } catch (err) {
-        history.push(routes.homePage);
+        history.push(routes.homePage());
       }
     };
 
@@ -57,7 +57,7 @@ export const ConfirmUserPage = () => {
         <div>
           <Title>Yeah! Confirmed :)</Title>
           <ButtonElement
-            onClick={() => history.push(routes.homePage)}
+            onClick={() => history.push(routes.homePage())}
             btnWidth={rem(300)}
           >
             Back to login and play!
