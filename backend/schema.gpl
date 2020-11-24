@@ -13,17 +13,17 @@ type UserDto {
 }
 
 type FriendsDataDto {
-  inviters: [UserDto!]!
-  friends: [UserDto!]!
-  invitedFriends: [UserDto!]!
+  inviters: [UserDto!]
+  friends: [UserDto!]
+  invitedFriends: [UserDto!]
 }
 
 type FriendsDataChangedDto {
-  aimedUserId: String!
-  message: String!
-  inviters: [UserDto!]!
-  friends: [UserDto!]!
-  invitedFriends: [UserDto!]!
+  aimedUserId: String
+  message: String
+  inviters: [UserDto!]
+  friends: [UserDto!]
+  invitedFriends: [UserDto!]
 }
 
 type Query {
@@ -46,5 +46,5 @@ input CreateUserInput {
 }
 
 type Subscription {
-  friendsDataChanged(id: String!): FriendsDataChangedDto!
+  friendsDataChanged(id: String!): FriendsDataChangedDto
 }

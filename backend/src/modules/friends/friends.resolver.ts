@@ -77,6 +77,7 @@ export class FriendsResolver {
   }
 
   @Subscription(() => FriendsDataChangedDto, {
+    nullable: true,
     filter(this: any, payload, variables) {
       return payload.friendsDataChanged.aimedUserId === variables.id;
     },
