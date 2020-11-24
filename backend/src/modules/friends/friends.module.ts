@@ -9,7 +9,7 @@ import { FriendsResolver } from './friends.resolver';
 import { FriendsService } from './friends.service';
 
 @Module({
-  imports: [AuthModule, UserModule],
+  imports: [AuthModule, UserModule, TypeOrmModule.forFeature([UserEntity])],
   providers: [FriendsResolver, FriendsService],
 })
 export class FriendsModule {}

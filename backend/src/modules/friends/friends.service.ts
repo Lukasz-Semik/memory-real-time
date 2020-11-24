@@ -6,7 +6,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { throwError } from 'src/helpers/throwError';
 
 @Injectable()
-export class UserService {
+export class FriendsService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>

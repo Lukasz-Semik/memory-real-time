@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type LoginDto {
+  accessToken: String!
+}
+
 type UserDto {
   id: String!
   email: String!
@@ -20,10 +24,6 @@ type CurrentUserDto {
 type FriendInvitedDto {
   invitedUserId: String!
   inviter: UserDto!
-}
-
-type LoginDto {
-  accessToken: String!
 }
 
 type Query {
