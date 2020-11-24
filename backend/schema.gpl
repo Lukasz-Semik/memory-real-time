@@ -12,29 +12,31 @@ type UserDto {
   nick: String!
 }
 
-type CurrentUserDto {
-  id: String!
-  email: String!
-  nick: String!
-  friendsIds: [String!]
-  invitedFriendsIds: [String!]
-  invitersIds: [String!]
+type FriendsDataDto {
+  inviters: [UserDto!]!
+  friends: [UserDto!]!
+  invitedFriends: [UserDto!]!
 }
 
-type FriendInvitedDto {
-  invitedUserId: String!
-  inviter: UserDto!
+type FriendsDataChangedDto {
+  aimedUserId: String!
+  message: String!
+  inviters: [UserDto!]!
+  friends: [UserDto!]!
+  invitedFriends: [UserDto!]!
 }
 
 type Query {
-  me: CurrentUserDto!
+  me: UserDto!
+  getFriendsData: FriendsDataDto!
 }
 
 type Mutation {
   login(password: String!, email: String!): LoginDto!
   createUser(data: CreateUserInput!): UserDto!
   confirmUser(token: String!): UserDto!
-  inviteFriend(email: String!): UserDto!
+  acceptInvitation(inviterId: String!): FriendsDataDto!
+  inviteFriend(email: String!): FriendsDataDto!
 }
 
 input CreateUserInput {
@@ -44,5 +46,5 @@ input CreateUserInput {
 }
 
 type Subscription {
-  friendInvited(id: String!): FriendInvitedDto!
+  friendsDataChanged(id: String!): FriendsDataChangedDto!
 }

@@ -1,13 +1,12 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
 import { UserEntity } from 'src/entities/user.entity';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UserDto } from '../user/dto/user.dto';
-import { FriendInvitedDto } from './dto/friend-invited.dto';
+import { FriendsDataChangedDto, FriendsDataDto } from './dto/friends';
 import { FriendsService } from './friends.service';
 
 const pubSub = new PubSub();
@@ -16,33 +15,73 @@ const pubSub = new PubSub();
 export class FriendsResolver {
   constructor(private readonly friendsService: FriendsService) {}
 
-  @Mutation(() => UserDto)
+  @Query(() => FriendsDataDto)
+  @UseGuards(JwtAuthGuard)
+  async getFriendsData(@CurrentUserId() userId: string) {
+    const friendsData = await this.friendsService.getFriendsData(userId);
+
+    return friendsData;
+  }
+
+  @Mutation(() => FriendsDataDto)
+  @UseGuards(JwtAuthGuard)
+  async acceptInvitation(
+    @Args('inviterId') inviterId: string,
+    @CurrentUserId() userId: string
+  ) {
+    await this.friendsService.acceptInvitation(userId, inviterId);
+    const currentUserFriendsData = await this.friendsService.getFriendsData(
+      userId
+    );
+    const inviterUserFriendsData = await this.friendsService.getFriendsData(
+      inviterId
+    );
+
+    pubSub.publish('friendsDataChanged', {
+      friendsDataChanged: {
+        aimedUserId: inviterId,
+        message: `User has accepted invitation`,
+        ...inviterUserFriendsData,
+      },
+    });
+
+    return currentUserFriendsData;
+  }
+
+  @Mutation(() => FriendsDataDto)
   @UseGuards(JwtAuthGuard)
   async inviteFriend(
     @Args('email') email: string,
     @CurrentUserId() userId: string
   ) {
-    const {
-      invitedUser,
-      inviter,
-    } = await this.friendsService.inviteUserToFriends(email, userId);
+    const invitedUser = await this.friendsService.inviteUserToFriends(
+      email,
+      userId
+    );
+    const invitedUserFriendsData = await this.friendsService.getFriendsData(
+      invitedUser.id
+    );
+    const currentUserFriendsData = await this.friendsService.getFriendsData(
+      userId
+    );
 
-    pubSub.publish('friendInvited', {
-      friendInvited: {
-        invitedUserId: invitedUser.id,
-        inviter,
+    pubSub.publish('friendsDataChanged', {
+      friendsDataChanged: {
+        aimedUserId: invitedUser.id,
+        message: `User has been invited to friends`,
+        ...invitedUserFriendsData,
       },
     });
 
-    return invitedUser;
+    return currentUserFriendsData;
   }
 
-  @Subscription(() => FriendInvitedDto, {
+  @Subscription(() => FriendsDataChangedDto, {
     filter(this: any, payload, variables) {
-      return payload.friendInvited.invitedUserId === variables.id;
+      return payload.friendsDataChanged.aimedUserId === variables.id;
     },
   })
-  friendInvited(@Args('id') id: string) {
-    return pubSub.asyncIterator('friendInvited');
+  friendsDataChanged(@Args('id') id: string) {
+    return pubSub.asyncIterator('friendsDataChanged');
   }
 }

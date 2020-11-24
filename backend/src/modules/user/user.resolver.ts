@@ -7,7 +7,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
-import { CurrentUserDto, UserDto } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 import { CreateUserInput } from './inputs';
 import { UserService } from './user.service';
 
@@ -18,12 +18,16 @@ export class UserResolver {
     private readonly authService: AuthService
   ) {}
 
-  @Query(() => CurrentUserDto)
+  @Query(() => UserDto)
   @UseGuards(JwtAuthGuard)
   async me(@CurrentUserId() userId: string) {
     const user = await this.userService.getUser(userId);
 
-    return user;
+    return {
+      email: user.email,
+      nick: user.nick,
+      id: user.id,
+    };
   }
 
   @Mutation(() => LoginDto)
