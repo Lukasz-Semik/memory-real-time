@@ -29,7 +29,10 @@ export class FriendsResolver {
     @Args('inviterId') inviterId: string,
     @CurrentUserId() userId: string
   ) {
-    await this.friendsService.acceptInvitation(userId, inviterId);
+    const currentUserNick = await this.friendsService.acceptInvitation(
+      userId,
+      inviterId
+    );
     const currentUserFriendsData = await this.friendsService.getFriendsData(
       userId
     );
@@ -40,8 +43,36 @@ export class FriendsResolver {
     pubSub.publish('friendsDataChanged', {
       friendsDataChanged: {
         aimedUserId: inviterId,
-        message: `User has accepted your invitation`,
+        message: `User ${currentUserNick} has accepted your invitation`,
         ...inviterUserFriendsData,
+      },
+    });
+
+    return currentUserFriendsData;
+  }
+
+  @Mutation(() => FriendsDataDto)
+  @UseGuards(JwtAuthGuard)
+  async rejectInvitation(
+    @Args('inviterId') inviterId: string,
+    @CurrentUserId() userId: string
+  ) {
+    const currentUserNick = await this.friendsService.rejectInvitation(
+      userId,
+      inviterId
+    );
+    const currentUserFriendsData = await this.friendsService.getFriendsData(
+      userId
+    );
+    const inviterFriendsData = await this.friendsService.getFriendsData(
+      inviterId
+    );
+
+    pubSub.publish('friendsDataChanged', {
+      friendsDataChanged: {
+        aimedUserId: inviterId,
+        message: `User ${currentUserNick} has rejected your invitation`,
+        ...inviterFriendsData,
       },
     });
 
@@ -54,10 +85,10 @@ export class FriendsResolver {
     @Args('email') email: string,
     @CurrentUserId() userId: string
   ) {
-    const invitedUser = await this.friendsService.inviteUserToFriends(
-      email,
-      userId
-    );
+    const {
+      invitedUser,
+      currentUserNick,
+    } = await this.friendsService.inviteUserToFriends(email, userId);
     const invitedUserFriendsData = await this.friendsService.getFriendsData(
       invitedUser.id
     );
@@ -68,8 +99,65 @@ export class FriendsResolver {
     pubSub.publish('friendsDataChanged', {
       friendsDataChanged: {
         aimedUserId: invitedUser.id,
-        message: `You have been invited to friends`,
+        message: `You have been invited to friends by ${currentUserNick}`,
         ...invitedUserFriendsData,
+      },
+    });
+
+    return currentUserFriendsData;
+  }
+
+  @Mutation(() => FriendsDataDto)
+  @UseGuards(JwtAuthGuard)
+  async removeFriend(
+    @Args('friendId') friendId: string,
+    @CurrentUserId() userId: string
+  ) {
+    const currentUserNick = await this.friendsService.removeFriend(
+      friendId,
+      userId
+    );
+    const friendUserFriendsData = await this.friendsService.getFriendsData(
+      friendId
+    );
+    const currentUserFriendsData = await this.friendsService.getFriendsData(
+      userId
+    );
+
+    pubSub.publish('friendsDataChanged', {
+      friendsDataChanged: {
+        aimedUserId: friendId,
+        message: `You have been removed from ${currentUserNick}'s friends`,
+        ...friendUserFriendsData,
+      },
+    });
+
+    return currentUserFriendsData;
+  }
+
+  @Mutation(() => FriendsDataDto)
+  @UseGuards(JwtAuthGuard)
+  async cancelInvitation(
+    @Args('invitedFriendId') invitedFriendId: string,
+    @CurrentUserId() userId: string
+  ) {
+    const currentUserNick = await this.friendsService.cancelInvitation(
+      invitedFriendId,
+      userId
+    );
+
+    const invitedFriendUserFriendsData = await this.friendsService.getFriendsData(
+      invitedFriendId
+    );
+    const currentUserFriendsData = await this.friendsService.getFriendsData(
+      userId
+    );
+
+    pubSub.publish('friendsDataChanged', {
+      friendsDataChanged: {
+        aimedUserId: invitedFriendId,
+        message: `Your invitation from ${currentUserNick} has been cancelled`,
+        ...invitedFriendUserFriendsData,
       },
     });
 

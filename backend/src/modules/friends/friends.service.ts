@@ -90,6 +90,100 @@ export class FriendsService {
       ),
       friendsIds: [...(inviter.friendsIds || []), userId],
     });
+
+    return currentUser.nick;
+  }
+
+  async rejectInvitation(userId: string, inviterId: string) {
+    const currentUser = await this.userRepository.findOne(userId);
+
+    if (!currentUser) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
+    }
+
+    const inviter = await this.userRepository.findOne(inviterId);
+
+    if (!inviter) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
+    }
+
+    if (!(currentUser.invitersIds || []).includes(inviter.id)) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user has not been invited' });
+    }
+
+    await this.userRepository.save({
+      ...currentUser,
+      invitersIds: currentUser.invitersIds.filter(id => id !== inviterId),
+    });
+
+    await this.userRepository.save({
+      ...inviter,
+      invitedFriendsIds: inviter.invitedFriendsIds.filter(id => id !== userId),
+    });
+
+    return currentUser.nick;
+  }
+
+  async cancelInvitation(invitedFriendId, userId: string) {
+    const currentUser = await this.userRepository.findOne(userId);
+
+    if (!currentUser) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
+    }
+
+    if (!(currentUser.invitedFriendsIds || []).includes(invitedFriendId)) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user is not invited' });
+    }
+
+    const invitedFriend = await this.userRepository.findOne(invitedFriendId);
+
+    if (!invitedFriend) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
+    }
+
+    await this.userRepository.save({
+      ...currentUser,
+      invitedFriendsIds: currentUser.invitedFriendsIds.filter(
+        id => id !== invitedFriendId
+      ),
+    });
+
+    await this.userRepository.save({
+      ...invitedFriend,
+      invitersIds: invitedFriend.invitersIds.filter(id => id !== userId),
+    });
+
+    return currentUser.nick;
+  }
+
+  async removeFriend(friendId: string, userId: string) {
+    const currentUser = await this.userRepository.findOne(userId);
+
+    if (!currentUser) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
+    }
+
+    const friend = await this.userRepository.findOne(friendId);
+
+    if (!friend) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user not exists' });
+    }
+
+    if (!(currentUser.friendsIds || []).includes(friendId)) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'user has not been invited' });
+    }
+
+    await this.userRepository.save({
+      ...currentUser,
+      friendsIds: currentUser.friendsIds.filter(id => id !== friend.id),
+    });
+
+    await this.userRepository.save({
+      ...friend,
+      friendsIds: friend.friendsIds.filter(id => id !== userId),
+    });
+
+    return currentUser.nick;
   }
 
   async inviteUserToFriends(email: string, currentUserId: string) {
@@ -129,6 +223,9 @@ export class FriendsService {
       invitersIds: [...(invitedUser.invitersIds || []), currentUser.id],
     });
 
-    return invitedUser;
+    return {
+      invitedUser,
+      currentUserNick: currentUser.nick,
+    };
   }
 }

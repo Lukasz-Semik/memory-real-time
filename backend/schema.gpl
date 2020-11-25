@@ -36,7 +36,10 @@ type Mutation {
   createUser(data: CreateUserInput!): UserDto!
   confirmUser(token: String!): UserDto!
   acceptInvitation(inviterId: String!): FriendsDataDto!
+  rejectInvitation(inviterId: String!): FriendsDataDto!
   inviteFriend(email: String!): FriendsDataDto!
+  removeFriend(friendId: String!): FriendsDataDto!
+  cancelInvitation(invitedFriendId: String!): FriendsDataDto!
 }
 
 input CreateUserInput {
