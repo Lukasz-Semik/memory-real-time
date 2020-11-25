@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import React, { useContext, useState } from 'react';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
@@ -8,7 +7,7 @@ import { NotificationsContext } from 'src/features/Dashboard/Notifications/Notif
 import { LoaderElement } from 'src/components/Elements/LoaderElement/LoaderElement';
 
 import { FriendsList } from './FriendsList';
-import { ACCEPT_INVITATION } from './queries';
+import { useFriendsChanges } from './useFriendsChanges';
 
 const Wrapper = styled.div`
   display: flex;
@@ -81,29 +80,55 @@ enum Tab {
 
 export const FriendsTabsList = () => {
   const [tab, setTab] = useState<Tab>(Tab.Inviters);
+  const { friends, inviters, invitedFriends, isLoadingFriends } = useContext(
+    NotificationsContext
+  );
+
   const {
-    friends,
-    inviters,
-    invitedFriends,
-    isLoadingFriends,
-    setFriendsState,
-  } = useContext(NotificationsContext);
-
-  const [acceptInvitation, { data }] = useMutation(ACCEPT_INVITATION);
-  const friendsAfterAcceptInvitation = data?.acceptInvitation;
-
-  useEffect(() => {
-    if (friendsAfterAcceptInvitation) {
-      setFriendsState(friendsAfterAcceptInvitation);
-    }
-  }, [friendsAfterAcceptInvitation, setFriendsState]);
+    acceptInvitation,
+    rejectInvitation,
+    removeFriend,
+    cancelInvitation,
+  } = useFriendsChanges();
 
   const getList = () => {
     switch (tab) {
       case Tab.Friends:
-        return <FriendsList friends={friends} />;
+        return (
+          <FriendsList
+            friends={friends}
+            renderControls={friend => (
+              <ControlButtonsWrapper>
+                <RejectButton
+                  onClick={() =>
+                    removeFriend({ variables: { friendId: friend.id } })
+                  }
+                >
+                  Remove
+                </RejectButton>
+              </ControlButtonsWrapper>
+            )}
+          />
+        );
       case Tab.InvitedFriends:
-        return <FriendsList friends={invitedFriends} />;
+        return (
+          <FriendsList
+            friends={invitedFriends}
+            renderControls={friend => (
+              <ControlButtonsWrapper>
+                <RejectButton
+                  onClick={() =>
+                    cancelInvitation({
+                      variables: { invitedFriendId: friend.id },
+                    })
+                  }
+                >
+                  Cancel
+                </RejectButton>
+              </ControlButtonsWrapper>
+            )}
+          />
+        );
       case Tab.Inviters:
         return (
           <FriendsList
@@ -118,7 +143,13 @@ export const FriendsTabsList = () => {
                   Accept
                 </SuccessButton>
                 <Spacer />
-                <RejectButton>Reject</RejectButton>
+                <RejectButton
+                  onClick={() =>
+                    rejectInvitation({ variables: { inviterId: friend.id } })
+                  }
+                >
+                  Reject
+                </RejectButton>
               </ControlButtonsWrapper>
             )}
           />
