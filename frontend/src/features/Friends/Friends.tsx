@@ -1,54 +1,20 @@
-import React, { useContext, useEffect } from 'react';
-import { gql, useMutation } from '@apollo/client';
-import { isEmpty } from 'lodash';
+import React from 'react';
 import { rem } from 'polished';
+import styled from 'styled-components';
 
-import { useGetCurrentUser } from 'src/store/users/selectors';
-
-import { NotificationsContext } from '../Dashboard/Notifications/Notifications';
-import { FriendsTabsList } from './FriendsTabList/FriendsTabList';
 import { DashboardPageLayout } from '../Dashboard/DashboardPageLayout/DashboardPageLayout';
+import { FriendsTabsList } from './FriendsTabList/FriendsTabList';
+import { InviteFriendForm } from './InviteFriendForm/InviteFriendForm';
 
-const AAA = gql`
-  mutation PerformSignUp($email: String!) {
-    inviteFriend(email: $email) {
-      inviters {
-        nick
-      }
-      invitedFriends {
-        nick
-      }
-      friends {
-        nick
-      }
-    }
-  }
+const Title = styled.h2`
+  padding: ${rem(20)};
 `;
 
 export const Friends = () => {
-  const currentUser = useGetCurrentUser();
-  const { friends, invitedFriends, inviters, setFriendsState } = useContext(
-    NotificationsContext
-  );
-
-  const [invite, { data }] = useMutation(AAA, {
-    variables: { email: 'semik.lukasz@gmail.com' },
-  });
-
-  const invitedFriendData = data?.inviteFriend;
-
-  useEffect(() => {
-    if (!isEmpty(invitedFriendData)) {
-      setFriendsState(invitedFriendData);
-    }
-  }, [invitedFriendData, setFriendsState]);
-
   return (
     <DashboardPageLayout>
-      {currentUser.email === 'djpluki@gmail.com' && (
-        <button onClick={() => invite()}>Invite</button>
-      )}
-
+      <Title>Friends</Title>
+      <InviteFriendForm />
       <FriendsTabsList />
     </DashboardPageLayout>
   );
