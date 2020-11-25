@@ -40,7 +40,7 @@ export class FriendsResolver {
     pubSub.publish('friendsDataChanged', {
       friendsDataChanged: {
         aimedUserId: inviterId,
-        message: `User has accepted invitation`,
+        message: `User has accepted your invitation`,
         ...inviterUserFriendsData,
       },
     });
@@ -68,7 +68,7 @@ export class FriendsResolver {
     pubSub.publish('friendsDataChanged', {
       friendsDataChanged: {
         aimedUserId: invitedUser.id,
-        message: `User has been invited to friends`,
+        message: `You have been invited to friends`,
         ...invitedUserFriendsData,
       },
     });
@@ -77,6 +77,7 @@ export class FriendsResolver {
   }
 
   @Subscription(() => FriendsDataChangedDto, {
+    nullable: true,
     filter(this: any, payload, variables) {
       return payload.friendsDataChanged.aimedUserId === variables.id;
     },

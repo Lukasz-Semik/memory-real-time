@@ -4,16 +4,27 @@ import { UserDto } from '../../user/dto/user.dto';
 
 @ObjectType()
 export class FriendsDataDto {
-  @Field(type => [UserDto]) readonly inviters: UserDto[];
-  @Field(type => [UserDto]) readonly friends: UserDto[];
-  @Field(type => [UserDto]) readonly invitedFriends: UserDto[];
+  @Field(type => [UserDto], { nullable: true }) readonly inviters:
+    | UserDto[]
+    | null;
+  @Field(type => [UserDto], { nullable: true }) readonly friends:
+    | UserDto[]
+    | null;
+  @Field(type => [UserDto], { nullable: true })
+  readonly invitedFriends: UserDto[] | null;
 }
 
 @ObjectType()
 export class FriendsDataChangedDto {
-  @Field() readonly aimedUserId: string;
-  @Field() readonly message: string;
-  @Field(type => [UserDto]) readonly inviters: UserDto[];
-  @Field(type => [UserDto]) readonly friends: UserDto[];
-  @Field(type => [UserDto]) readonly invitedFriends: UserDto[];
+  @Field({ nullable: true }) readonly aimedUserId: string | null;
+  @Field({ nullable: true }) readonly message: string | null;
+  @Field(type => [UserDto], { nullable: true }) readonly inviters:
+    | UserDto[]
+    | null;
+  @Field(type => [UserDto], { nullable: true }) readonly friends:
+    | UserDto[]
+    | null;
+  @Field(type => [UserDto], { nullable: true }) readonly invitedFriends:
+    | UserDto[]
+    | null;
 }

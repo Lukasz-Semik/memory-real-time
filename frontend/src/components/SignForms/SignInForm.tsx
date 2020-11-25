@@ -69,7 +69,7 @@ export const SignInForm = () => {
       </ButtonWrapper>
 
       <LinkWrapper>
-        <LinkElement path={routes.signUpPage}>Sign Up</LinkElement>
+        <LinkElement path={routes.signUpPage()}>Sign Up</LinkElement>
       </LinkWrapper>
     </FormStyled>
   );

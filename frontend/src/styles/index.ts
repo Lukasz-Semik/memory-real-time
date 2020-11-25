@@ -5,5 +5,7 @@ export const styles = {
     mainOrange: '#f7971e',
     mainYellow: '#ffd200',
     mainMint: '#429e9d',
+    mainGreen: '#22d588',
+    mainColor: '#ef2828',
   },
 };

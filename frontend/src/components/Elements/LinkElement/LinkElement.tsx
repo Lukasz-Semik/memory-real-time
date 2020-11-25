@@ -16,7 +16,14 @@ const LinkStyled = styled(NavLink)`
   }
 `;
 
-export const LinkElement = ({ children, path }) => {
+interface Props {
+  path: string;
+}
+
+export const LinkElement = ({
+  children,
+  path,
+}: React.PropsWithChildren<Props>) => {
   return (
     <LinkStyled activeClassName={activeClassName} to={path} exact>
       {children}

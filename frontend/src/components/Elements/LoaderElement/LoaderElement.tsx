@@ -6,13 +6,14 @@ import { styles } from 'src/styles';
 interface Props {
   isVisible?: boolean;
   size?: number;
+  color?: string;
 }
 
-export const LoaderElement = ({ isVisible, size }: Props) => {
+export const LoaderElement = ({ isVisible, size, color }: Props) => {
   return isVisible ? (
     <Loader
       type="Bars"
-      color={styles.colors.white}
+      color={color || styles.colors.white}
       height={size || 100}
       width={size || 100}
     />

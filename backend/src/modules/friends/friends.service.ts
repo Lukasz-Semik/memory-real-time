@@ -107,7 +107,12 @@ export class FriendsService {
 
     const currentUser = await this.userRepository.findOne(currentUserId);
 
-    if ((currentUser.invitedFriendsIds || []).includes(invitedUser.id)) {
+    if (
+      [
+        ...(currentUser.invitedFriendsIds || []),
+        ...(currentUser.friendsIds || []),
+      ].includes(invitedUser.id)
+    ) {
       throwError(HttpStatus.BAD_REQUEST, { msg: 'user already invited ' });
     }
 
