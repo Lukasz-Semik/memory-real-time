@@ -39,9 +39,6 @@ export const SideBar = () => {
       <div>
         <LinkElement path={routes.friends()}>Friends</LinkElement>
       </div>
-      <div>
-        <LinkElement path={routes.inviteFriend()}>InviteFriend</LinkElement>
-      </div>
     </Wrapper>
   );
 };

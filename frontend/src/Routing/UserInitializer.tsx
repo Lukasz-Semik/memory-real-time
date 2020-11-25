@@ -69,7 +69,7 @@ export const UserInitializer = ({
         return setIsInitialized(true);
       }
 
-      if (!isEmpty(currentUser)) {
+      if (!isEmpty(currentUser) && !isOnDashboardPage) {
         setIsInitialized(true);
         return history.push(routes.dashboardPage());
       }
@@ -95,9 +95,12 @@ export const UserInitializer = ({
     if (!isEmpty(fetchedUser)) {
       dispatch(setCurrentUser(fetchedUser));
       setIsInitialized(true);
-      history.push(routes.dashboardPage());
+
+      if (!isOnDashboardPage) {
+        history.push(routes.dashboardPage());
+      }
     }
-  }, [fetchedUser, dispatch, history]);
+  }, [fetchedUser, currentUser, dispatch, history, isOnDashboardPage]);
 
   useEffect(() => {
     if (error?.message === 'Unauthorized') {

@@ -1,54 +1,13 @@
-import React, { useEffect } from 'react';
-import {
-  gql,
-  useLazyQuery,
-  useMutation,
-  useSubscription,
-} from '@apollo/client';
+import React, { useContext, useEffect } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { isEmpty } from 'lodash';
 import { rem } from 'polished';
 
 import { useGetCurrentUser } from 'src/store/users/selectors';
-import { current } from '@reduxjs/toolkit';
 
-const FETCH_FRIENDS_DATA = gql`
-  query FetchFriendsData {
-    getFriendsData {
-      inviters {
-        id
-        email
-        nick
-      }
-      invitedFriends {
-        id
-        email
-        nick
-      }
-      friends {
-        id
-        email
-        nick
-      }
-    }
-  }
-`;
-
-const FRIENDS_DATA_CHANGED_SUBSCRIPTION = gql`
-  subscription friendsDataChanged($id: String!) {
-    friendsDataChanged(id: $id) {
-      message
-      aimedUserId
-      inviters {
-        nick
-      }
-      invitedFriends {
-        nick
-      }
-      friends {
-        nick
-      }
-    }
-  }
-`;
+import { NotificationsContext } from '../Dashboard/Notifications/Notifications';
+import { FriendsTabsList } from './FriendsTabList/FriendsTabList';
+import { DashboardPageLayout } from '../Dashboard/DashboardPageLayout/DashboardPageLayout';
 
 const AAA = gql`
   mutation PerformSignUp($email: String!) {
@@ -68,30 +27,29 @@ const AAA = gql`
 
 export const Friends = () => {
   const currentUser = useGetCurrentUser();
-  const [fetchUser, { data }] = useLazyQuery(FETCH_FRIENDS_DATA);
-  const [invite] = useMutation(AAA, {
-    variables: { email: 'semik.lukasz@gmail.com' },
-  });
-  console.log({ data });
-
-  const { data: subData, ...rest } = useSubscription(
-    FRIENDS_DATA_CHANGED_SUBSCRIPTION,
-    {
-      variables: { id: currentUser.id },
-    }
+  const { friends, invitedFriends, inviters, setFriendsState } = useContext(
+    NotificationsContext
   );
 
-  console.log({ subData, rest });
+  const [invite, { data }] = useMutation(AAA, {
+    variables: { email: 'semik.lukasz@gmail.com' },
+  });
+
+  const invitedFriendData = data?.inviteFriend;
+
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    if (!isEmpty(invitedFriendData)) {
+      setFriendsState(invitedFriendData);
+    }
+  }, [invitedFriendData, setFriendsState]);
 
   return (
-    <div style={{ paddingLeft: rem(300) }}>
+    <DashboardPageLayout>
       {currentUser.email === 'djpluki@gmail.com' && (
         <button onClick={() => invite()}>Invite</button>
       )}
-      Friends
-    </div>
+
+      <FriendsTabsList />
+    </DashboardPageLayout>
   );
 };
