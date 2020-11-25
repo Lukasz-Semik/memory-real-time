@@ -77,7 +77,7 @@ export const SignUpForm = () => {
       </ButtonWrapper>
 
       <LinkWrapper>
-        <LinkElement path={routes.homePage}>Back to Sign In page</LinkElement>
+        <LinkElement path={routes.homePage()}>Back to Sign In page</LinkElement>
       </LinkWrapper>
     </FormStyled>
   );
