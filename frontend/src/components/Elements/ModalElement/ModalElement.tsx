@@ -55,6 +55,7 @@ interface Props extends ModalInnerProps {
   isOpen: boolean;
   close: () => void;
   title?: string;
+  isCancelButtonHidden?: boolean;
 }
 
 export const ModalElement = ({
@@ -63,11 +64,12 @@ export const ModalElement = ({
   children,
   minWidth,
   title,
+  isCancelButtonHidden,
 }: React.PropsWithChildren<Props>) => {
   return (
     <ModalStyled style={customStyles} isOpen={isOpen} onRequestClose={close}>
       <ModalInner minWidth={minWidth}>
-        <CloseButton onClick={close}>X</CloseButton>
+        {!isCancelButtonHidden && <CloseButton onClick={close}>X</CloseButton>}
         {title && <Title>{title}</Title>}
         {children}
       </ModalInner>

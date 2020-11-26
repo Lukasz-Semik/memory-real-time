@@ -12,10 +12,12 @@ export class GameDataDto {
 export enum InvitationResponse {
   Invited = 'invited',
   InvitationConfirmed = 'invitationConfirmed',
+  InvitationRejected = 'invitationRejected',
 }
 
 @ObjectType()
 export class GameInvitationDataDto {
+  @Field(type => String) readonly message: string;
   @Field(type => String) readonly gameId: string;
   @Field(type => UserDto) readonly oponent: UserDto;
   @Field(type => UserDto) readonly creator: UserDto;

@@ -30,6 +30,7 @@ export class GameResolver {
     pubSub.publish('gameInvitation', {
       gameInvitation: {
         invitationResponse: InvitationResponse.Invited,
+        message: `Wanna play with ${gameData.creator.nick}?`,
         ...gameData,
       },
     });
@@ -51,7 +52,26 @@ export class GameResolver {
     pubSub.publish('gameInvitation', {
       gameInvitation: {
         invitationResponse: InvitationResponse.InvitationConfirmed,
+        message: `${gameData.oponent.nick} accepted game invitation`,
         ...gameData,
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
+  async rejectGameInvitation(@Args('gameId') gameId: string) {
+    const rejectedGameData = await this.gameService.rejectGameInvitation(
+      gameId
+    );
+
+    pubSub.publish('gameInvitation', {
+      gameInvitation: {
+        invitationResponse: InvitationResponse.InvitationRejected,
+        message: 'Game has been dissmissed',
+        ...rejectedGameData,
       },
     });
 
@@ -61,17 +81,16 @@ export class GameResolver {
   @Subscription(() => GameInvitationDataDto, {
     nullable: true,
     filter(this: any, payload, variables) {
-      if (
-        payload.gameInvitation.invitationResponse === InvitationResponse.Invited
-      ) {
-        return payload.gameInvitation.oponent.id === variables.id;
+      const { invitationResponse, oponent, creator } = payload.gameInvitation;
+      if (invitationResponse === InvitationResponse.InvitationRejected) {
+        return oponent.id === variables.id || creator.id === variables.id;
+      }
+      if (invitationResponse === InvitationResponse.Invited) {
+        return oponent.id === variables.id;
       }
 
-      if (
-        payload.gameInvitation.invitationResponse ===
-        InvitationResponse.InvitationConfirmed
-      ) {
-        return payload.gameInvitation.creator.id === variables.id;
+      if (invitationResponse === InvitationResponse.InvitationConfirmed) {
+        return creator.id === variables.id;
       }
 
       return false;

@@ -33,6 +33,7 @@ type GameDataDto {
 }
 
 type GameInvitationDataDto {
+  message: String!
   gameId: String!
   oponent: UserDto!
   creator: UserDto!
@@ -55,6 +56,7 @@ type Mutation {
   cancelInvitation(invitedFriendId: String!): FriendsDataDto!
   createGame(oponentId: String!): GameDataDto!
   confirmGameInvitation(gameId: String!): Boolean!
+  rejectGameInvitation(gameId: String!): Boolean!
 }
 
 input CreateUserInput {

@@ -34,13 +34,18 @@ export const NotificationsContextProvider = ({
     friends: [],
   });
   const currentUser = useGetCurrentUser();
-  const [fetchFriends, { data, loading }] = useLazyQuery(FETCH_FRIENDS_DATA);
-  const friendsData = data?.getFriendsData;
+  const [fetchFriends, { data: friendsDataResponse, loading }] = useLazyQuery(
+    FETCH_FRIENDS_DATA
+  );
+  const friendsData = friendsDataResponse?.getFriendsData;
 
-  const { data: subData } = useSubscription(FRIENDS_DATA_CHANGED_SUBSCRIPTION, {
-    variables: { id: currentUser.id },
-  });
-  const friendsSubData = subData?.friendsDataChanged;
+  const { data: friendsSubDataResponse } = useSubscription(
+    FRIENDS_DATA_CHANGED_SUBSCRIPTION,
+    {
+      variables: { id: currentUser.id },
+    }
+  );
+  const friendsSubData = friendsSubDataResponse?.friendsDataChanged;
 
   useEffect(() => {
     fetchFriends();

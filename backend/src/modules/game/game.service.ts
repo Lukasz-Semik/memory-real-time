@@ -79,4 +79,26 @@ export class GameService {
       },
     };
   }
+
+  async rejectGameInvitation(gameId: string) {
+    const game = await this.gameRepository.findOne(gameId);
+    const creator = await this.userRepository.findOne(game.creatorId);
+    const oponent = await this.userRepository.findOne(game.oponentId);
+
+    await this.gameRepository.delete(game.id);
+
+    return {
+      gameId: game.id,
+      creator: {
+        id: creator.id,
+        nick: creator.nick,
+        email: creator.email,
+      },
+      oponent: {
+        id: oponent.id,
+        nick: oponent.nick,
+        email: oponent.email,
+      },
+    };
+  }
 }
