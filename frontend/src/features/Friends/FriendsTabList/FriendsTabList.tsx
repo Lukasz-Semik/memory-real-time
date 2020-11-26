@@ -4,9 +4,15 @@ import styled from 'styled-components';
 
 import { styles } from 'src/styles';
 import { NotificationsContext } from 'src/features/Dashboard/Notifications/Notifications';
+import { FriendsList } from 'src/components/Elements/FriendsList/FriendsList';
+import {
+  ControlButtonsWrapper,
+  RejectButton,
+  Spacer,
+  SuccessButton,
+} from 'src/components/Elements/FriendsList/FriendsList.styled';
 import { LoaderElement } from 'src/components/Elements/LoaderElement/LoaderElement';
 
-import { FriendsList } from './FriendsList';
 import { useFriendsChanges } from './useFriendsChanges';
 
 const Wrapper = styled.div`
@@ -52,26 +58,6 @@ const LoaderWrapper = styled.div`
   justify-content: center;
 `;
 
-const SuccessButton = styled.button`
-  font-size: ${rem(12)};
-  background-color: ${styles.colors.mainGreen};
-  padding: ${rem(5)} ${rem(10)};
-  color: ${styles.colors.white};
-`;
-
-const RejectButton = styled(SuccessButton)`
-  background-color: #ef2828;
-`;
-
-const Spacer = styled.div`
-  margin-right: ${rem(5)};
-`;
-
-const ControlButtonsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 enum Tab {
   Friends = 'friends',
   InvitedFriends = 'invitedFriends',
@@ -79,7 +65,7 @@ enum Tab {
 }
 
 export const FriendsTabsList = () => {
-  const [tab, setTab] = useState<Tab>(Tab.Inviters);
+  const [tab, setTab] = useState<Tab>(Tab.Friends);
   const { friends, inviters, invitedFriends, isLoadingFriends } = useContext(
     NotificationsContext
   );

@@ -26,6 +26,19 @@ type FriendsDataChangedDto {
   invitedFriends: [UserDto!]
 }
 
+type GameDataDto {
+  gameId: String!
+  oponent: UserDto!
+  creator: UserDto!
+}
+
+type GameInvitationDataDto {
+  gameId: String!
+  oponent: UserDto!
+  creator: UserDto!
+  invitationResponse: String!
+}
+
 type Query {
   me: UserDto!
   getFriendsData: FriendsDataDto!
@@ -40,6 +53,8 @@ type Mutation {
   inviteFriend(email: String!): FriendsDataDto!
   removeFriend(friendId: String!): FriendsDataDto!
   cancelInvitation(invitedFriendId: String!): FriendsDataDto!
+  createGame(oponentId: String!): GameDataDto!
+  confirmGameInvitation(gameId: String!): Boolean!
 }
 
 input CreateUserInput {
@@ -50,4 +65,5 @@ input CreateUserInput {
 
 type Subscription {
   friendsDataChanged(id: String!): FriendsDataChangedDto
+  gameInvitation(id: String!): GameInvitationDataDto
 }

@@ -1,3 +1,7 @@
-1. Friends
- - invite friend to play with by nick/email
- - show dynamically if friend is logged in
+Game
+- invite friend -> show inviting modal
+- send notification -> create game board -> show toast with buttons -> accept/reject
+- reject -> destroy game board, hide waiting modal
+- accept -> redirect to game board invited user
+- redirect to game board initer
+- start game
