@@ -9,7 +9,8 @@ import {
   notifySuccess,
 } from 'src/components/Elements/ToastElement';
 
-import { GameContext, InvitationResponse } from '../GameContext/GameContext';
+import { GameContext } from '../GameContext/GameContext';
+import { InvitationResponse } from '../types';
 import { GameInvitationModal } from './GameInvitationModal/GameInvitationModal';
 import { GameWaitingModal } from './GameWaitingModal/GameWaitingModal';
 

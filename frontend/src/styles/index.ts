@@ -7,5 +7,6 @@ export const styles = {
     mainMint: '#429e9d',
     mainGreen: '#22d588',
     mainColor: '#ef2828',
+    mainRed: '#ef2828',
   },
 };

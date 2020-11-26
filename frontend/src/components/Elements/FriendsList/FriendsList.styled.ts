@@ -11,7 +11,7 @@ export const SuccessButton = styled.button`
 `;
 
 export const RejectButton = styled(SuccessButton)`
-  background-color: #ef2828;
+  background-color: ${styles.colors.mainRed};
 `;
 
 export const Spacer = styled.div`

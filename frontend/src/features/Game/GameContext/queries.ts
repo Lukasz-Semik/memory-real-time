@@ -49,3 +49,9 @@ export const REJECT_GAME_INVITATION = gql`
     rejectGameInvitation(gameId: $gameId)
   }
 `;
+
+export const CANCEL_GAME_INVITATION = gql`
+  mutation cancelGameInvitation($gameId: String!) {
+    cancelGameInvitation(gameId: $gameId)
+  }
+`;

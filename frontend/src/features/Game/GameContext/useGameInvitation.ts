@@ -11,15 +11,12 @@ import {
 
 import { GameState } from '../types';
 import {
+  CANCEL_GAME_INVITATION,
   CONFIRM_GAME_INVITATION,
   CREATE_GAME,
   GAME_INVITATION_SUBSCRIPTION,
   REJECT_GAME_INVITATION,
 } from './queries';
-
-interface CreatedGameResponse {
-  createGame: GameState;
-}
 
 export const useGameInvitation = () => {
   const currentUser = useGetCurrentUser();
@@ -32,6 +29,7 @@ export const useGameInvitation = () => {
 
   const [confirmGameInvitation] = useMutation(CONFIRM_GAME_INVITATION);
   const [rejectGameInvitation] = useMutation(REJECT_GAME_INVITATION);
+  const [cancelGameInvitation] = useMutation(CANCEL_GAME_INVITATION);
 
   const { data: gameInvitationResponse } = useSubscription<{
     gameInvitation: GameState;
@@ -50,6 +48,12 @@ export const useGameInvitation = () => {
     [rejectGameInvitation]
   );
 
+  const cancelGame = useCallback(async () => {
+    await cancelGameInvitation({
+      variables: { gameId: createdGameId },
+    });
+  }, [cancelGameInvitation, createdGameId]);
+
   const confirmGame = useCallback(
     async (gameId: string) => {
       await confirmGameInvitation({
@@ -67,5 +71,6 @@ export const useGameInvitation = () => {
     gameInvitatioData,
     rejectGame,
     confirmGame,
+    cancelGame,
   };
 };

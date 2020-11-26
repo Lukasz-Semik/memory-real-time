@@ -57,6 +57,7 @@ type Mutation {
   createGame(oponentId: String!): GameDataDto!
   confirmGameInvitation(gameId: String!): Boolean!
   rejectGameInvitation(gameId: String!): Boolean!
+  cancelGameInvitation(gameId: String!): Boolean!
 }
 
 input CreateUserInput {

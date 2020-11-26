@@ -3,25 +3,14 @@ import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FetchResult, MutationFunctionOptions } from '@apollo/client';
 
-import { User } from 'src/types/user';
-import { notifyWarning } from 'src/components/Elements/ToastElement';
+import {
+  notifyError,
+  notifyWarning,
+} from 'src/components/Elements/ToastElement';
 
+import { GameState, InvitationResponse } from '../types';
 import { GameInvitationToast } from './GameInvitationToast';
 import { useGameInvitation } from './useGameInvitation';
-
-export enum InvitationResponse {
-  Invited = 'invited',
-  InvitationConfirmed = 'invitationConfirmed',
-  InvitationRejected = 'invitationRejected',
-}
-
-interface GameState {
-  gameId: string;
-  invitationResponse: InvitationResponse;
-  oponent: User;
-  creator: User;
-  message: string;
-}
 
 interface ContextValues {
   gameState?: GameState;
@@ -30,6 +19,7 @@ interface ContextValues {
     options?: MutationFunctionOptions<any, Record<string, any>>
   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>;
   rejectGame: (gameId: string) => Promise<void>;
+  cancelGame: () => Promise<void>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
 }
 
@@ -48,6 +38,7 @@ export const GameContextProvider = ({
     gameInvitatioData,
     rejectGame,
     confirmGame,
+    cancelGame,
   } = useGameInvitation();
 
   const dismissConfirmationToast = useCallback(() => {
@@ -78,6 +69,15 @@ export const GameContextProvider = ({
           }
         );
       }
+
+      if (
+        gameInvitatioData.invitationResponse ===
+        InvitationResponse.InvitationCancelled
+      ) {
+        setGameState(undefined);
+        dismissConfirmationToast();
+        notifyError('Game has been dismissed');
+      }
     }
   }, [
     gameInvitatioData,
@@ -93,6 +93,7 @@ export const GameContextProvider = ({
         gameState,
         createGame,
         rejectGame,
+        cancelGame,
         setGameState,
         createdGameId,
       }}

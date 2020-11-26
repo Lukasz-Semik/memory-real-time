@@ -63,9 +63,7 @@ export class GameResolver {
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async rejectGameInvitation(@Args('gameId') gameId: string) {
-    const rejectedGameData = await this.gameService.rejectGameInvitation(
-      gameId
-    );
+    const rejectedGameData = await this.gameService.deleteGame(gameId);
 
     pubSub.publish('gameInvitation', {
       gameInvitation: {
@@ -78,11 +76,32 @@ export class GameResolver {
     return true;
   }
 
+  @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
+  async cancelGameInvitation(@Args('gameId') gameId: string) {
+    const cancelledGameData = await this.gameService.deleteGame(gameId);
+
+    pubSub.publish('gameInvitation', {
+      gameInvitation: {
+        invitationResponse: InvitationResponse.InvitationCancelled,
+        message: `${cancelledGameData.creator.nick} rejected game invitation`,
+        ...cancelledGameData,
+      },
+    });
+
+    return true;
+  }
+
   @Subscription(() => GameInvitationDataDto, {
     nullable: true,
     filter(this: any, payload, variables) {
       const { invitationResponse, oponent, creator } = payload.gameInvitation;
-      if (invitationResponse === InvitationResponse.InvitationRejected) {
+      if (
+        [
+          InvitationResponse.InvitationRejected,
+          InvitationResponse.InvitationCancelled,
+        ].includes(invitationResponse)
+      ) {
         return oponent.id === variables.id || creator.id === variables.id;
       }
       if (invitationResponse === InvitationResponse.Invited) {

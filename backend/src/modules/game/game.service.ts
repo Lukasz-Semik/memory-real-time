@@ -80,7 +80,7 @@ export class GameService {
     };
   }
 
-  async rejectGameInvitation(gameId: string) {
+  async deleteGame(gameId: string) {
     const game = await this.gameRepository.findOne(gameId);
     const creator = await this.userRepository.findOne(game.creatorId);
     const oponent = await this.userRepository.findOne(game.oponentId);
