@@ -1,6 +1,18 @@
 import React from 'react';
-import { rem } from 'polished';
+
+import { useModalState } from 'src/hooks/useModalState';
+import { GameStarter } from 'src/features/Game/GameStarter/GameStarter';
+
+import { DashboardPageLayout } from './DashboardPageLayout/DashboardPageLayout';
 
 export const Dashboard = () => {
-  return <div style={{ paddingLeft: rem(300) }}>Dashboard</div>;
+  const [isModalOpen, openModal, closeModal] = useModalState();
+
+  return (
+    <DashboardPageLayout title="Dashboard">
+      <button onClick={openModal}>Play with friend</button>
+
+      {isModalOpen && <GameStarter closeModal={closeModal} />}
+    </DashboardPageLayout>
+  );
 };

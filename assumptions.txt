@@ -1,3 +1,0 @@
-1. Friends
- - invite friend to play with by nick/email
- - show dynamically if friend is logged in
