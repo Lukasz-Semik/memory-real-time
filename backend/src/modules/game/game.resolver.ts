@@ -70,7 +70,7 @@ export class GameResolver {
     pubSub.publish('gameInvitation', {
       gameInvitation: {
         invitationResponse: InvitationResponse.InvitationRejected,
-        message: 'Game has been dissmissed',
+        message: `${rejectedGameData.oponent.nick} rejected game invitation`,
         ...rejectedGameData,
       },
     });
