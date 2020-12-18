@@ -43,6 +43,7 @@ type GameInvitationDataDto {
 type Query {
   me: UserDto!
   getFriendsData: FriendsDataDto!
+  getGame(gameId: String!): GameDataDto!
 }
 
 type Mutation {

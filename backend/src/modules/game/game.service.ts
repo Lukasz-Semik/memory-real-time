@@ -15,6 +15,33 @@ export class GameService {
     private readonly gameRepository: Repository<GameEntity>
   ) {}
 
+  async getGameData(gameId: string, userId: string) {
+    const game = await this.gameRepository.findOne(gameId);
+
+    if (![game.oponentId, game.creatorId].includes(userId)) {
+      throwError(HttpStatus.BAD_REQUEST, {
+        msg: 'user does not belong to this game',
+      });
+    }
+
+    const creator = await this.userRepository.findOne(game.creatorId);
+    const oponent = await this.userRepository.findOne(game.oponentId);
+
+    return {
+      gameId: game.id,
+      creator: {
+        id: creator.id,
+        nick: creator.nick,
+        email: creator.email,
+      },
+      oponent: {
+        id: oponent.id,
+        nick: oponent.nick,
+        email: oponent.email,
+      },
+    };
+  }
+
   async createGame(oponentId: string, userId: string) {
     const currentUser = await this.userRepository.findOne(userId);
 

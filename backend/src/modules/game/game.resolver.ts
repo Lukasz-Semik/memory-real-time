@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
@@ -18,6 +18,17 @@ const pubSub = new PubSub();
 @Resolver(() => GameEntity)
 export class GameResolver {
   constructor(private readonly gameService: GameService) {}
+
+  @Query(() => GameDataDto)
+  @UseGuards(JwtAuthGuard)
+  async getGame(
+    @Args('gameId') gameId: string,
+    @CurrentUserId() userId: string
+  ) {
+    const gameData = await this.gameService.getGameData(gameId, userId);
+
+    return gameData;
+  }
 
   @Mutation(() => GameDataDto)
   @UseGuards(JwtAuthGuard)
