@@ -39,6 +39,7 @@ module.exports = {
             '^(src/entities)(/.*|$)',
             '^(src/modules)(/.*|$)',
             '^(src/helpers)(/.*|$)',
+            '^(src/types)(/.*|$)',
             '^[^.]',
           ],
           ['^\\.'],

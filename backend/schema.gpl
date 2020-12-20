@@ -30,6 +30,10 @@ type GameDataDto {
   gameId: String!
   oponent: UserDto!
   creator: UserDto!
+  roundCount: Float!
+  currentPlayer: String!
+  creatorScore: Float!
+  oponentScore: Float!
 }
 
 type GameInvitationDataDto {
@@ -43,6 +47,7 @@ type GameInvitationDataDto {
 type Query {
   me: UserDto!
   getFriendsData: FriendsDataDto!
+  getGame(gameId: String!): GameDataDto!
 }
 
 type Mutation {

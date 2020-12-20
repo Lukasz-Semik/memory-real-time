@@ -1,9 +1,11 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
 import { styles } from 'src/styles';
 import { useGetCurrentUser } from 'src/store/users/selectors';
+import { getIsOnPage } from 'src/helpers/utils';
 import { routes } from 'src/constants/routes';
 import { LinkElement } from 'src/components/Elements/LinkElement/LinkElement';
 
@@ -14,11 +16,7 @@ const Wrapper = styled.div`
   width: ${rem(300)};
   height: 100%;
   background: ${styles.colors.mainOrange};
-  background: linear-gradient(
-    to top,
-    ${styles.colors.mainOrange},
-    ${styles.colors.mainYellow}
-  );
+  ${styles.helpers.orangeGradient};
   box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
 `;
 
@@ -30,7 +28,11 @@ const UserName = styled.p`
 
 export const SideBar = () => {
   const currentUser = useGetCurrentUser();
-  return (
+  const location = useLocation();
+
+  const isOnGamePage = getIsOnPage(location.pathname, routes.game());
+
+  return isOnGamePage ? null : (
     <Wrapper>
       <UserName>{currentUser.nick}</UserName>
       <div>

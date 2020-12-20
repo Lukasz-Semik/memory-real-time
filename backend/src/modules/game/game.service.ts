@@ -1,10 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { random } from 'lodash';
 import { Repository } from 'typeorm';
 
 import { GameEntity } from 'src/entities/game.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { throwError } from 'src/helpers/throwError';
+import { Player } from 'src/types/player';
 
 @Injectable()
 export class GameService {
@@ -14,6 +16,37 @@ export class GameService {
     @InjectRepository(GameEntity)
     private readonly gameRepository: Repository<GameEntity>
   ) {}
+
+  async getGameData(gameId: string, userId: string) {
+    const game = await this.gameRepository.findOne(gameId);
+
+    if (![game.oponentId, game.creatorId].includes(userId)) {
+      throwError(HttpStatus.BAD_REQUEST, {
+        msg: 'user does not belong to this game',
+      });
+    }
+
+    const creator = await this.userRepository.findOne(game.creatorId);
+    const oponent = await this.userRepository.findOne(game.oponentId);
+
+    return {
+      gameId: game.id,
+      roundCount: game.roundCount,
+      currentPlayer: game.currentPlayer,
+      creatorScore: game.creatorScore,
+      oponentScore: game.oponentScore,
+      creator: {
+        id: creator.id,
+        nick: creator.nick,
+        email: creator.email,
+      },
+      oponent: {
+        id: oponent.id,
+        nick: oponent.nick,
+        email: oponent.email,
+      },
+    };
+  }
 
   async createGame(oponentId: string, userId: string) {
     const currentUser = await this.userRepository.findOne(userId);
@@ -34,6 +67,7 @@ export class GameService {
 
     const createdGame = await this.gameRepository.save({
       ...newGame,
+      currentPlayer: [Player.Creator, Player.Oponent][random(0, 1)],
       oponentId,
       creatorId: userId,
     });
