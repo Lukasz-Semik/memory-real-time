@@ -16,11 +16,7 @@ const Wrapper = styled.div`
   width: ${rem(300)};
   height: 100%;
   background: ${styles.colors.mainOrange};
-  background: linear-gradient(
-    to top,
-    ${styles.colors.mainOrange},
-    ${styles.colors.mainYellow}
-  );
+  ${styles.helpers.orangeGradient};
   box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
 `;
 

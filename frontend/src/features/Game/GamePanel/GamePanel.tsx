@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import Loader from 'react-loader-spinner';
 import { useRouteMatch } from 'react-router-dom';
 import { gql, useLazyQuery } from '@apollo/client';
+
+import { LoaderFullScreenElement } from 'src/components/Elements/LoaderFullScreenElement/LoaderFullScreenElement';
 
 import { GameContext } from '../GameContext/GameContext';
 import { Header } from './Header/Header';
@@ -10,6 +11,10 @@ const GET_GAME_DATA = gql`
   query getGame($gameId: String!) {
     getGame(gameId: $gameId) {
       gameId
+      roundCount
+      currentPlayer
+      creatorScore
+      oponentScore
       oponent {
         id
         nick
@@ -44,7 +49,7 @@ export const GamePanel = () => {
   }, [data, setGameState]);
 
   return loading ? (
-    <Loader />
+    <LoaderFullScreenElement />
   ) : (
     <div>{gameState && <Header gameState={gameState} />}</div>
   );

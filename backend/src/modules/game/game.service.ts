@@ -1,10 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { random } from 'lodash';
 import { Repository } from 'typeorm';
 
 import { GameEntity } from 'src/entities/game.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { throwError } from 'src/helpers/throwError';
+import { Player } from 'src/types/player';
 
 @Injectable()
 export class GameService {
@@ -29,6 +31,10 @@ export class GameService {
 
     return {
       gameId: game.id,
+      roundCount: game.roundCount,
+      currentPlayer: game.currentPlayer,
+      creatorScore: game.creatorScore,
+      oponentScore: game.oponentScore,
       creator: {
         id: creator.id,
         nick: creator.nick,
@@ -61,6 +67,7 @@ export class GameService {
 
     const createdGame = await this.gameRepository.save({
       ...newGame,
+      currentPlayer: [Player.Creator, Player.Oponent][random(0, 1)],
       oponentId,
       creatorId: userId,
     });

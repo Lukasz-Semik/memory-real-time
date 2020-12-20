@@ -11,12 +11,8 @@ const Wrapper = styled.nav`
   align-items: center;
   justify-content: space-between;
   height: ${rem(80)};
-  background: linear-gradient(
-    to top,
-    ${styles.colors.mainOrange},
-    ${styles.colors.mainYellow}
-  );
   box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
+  ${styles.helpers.orangeGradient};
 `;
 
 const Creator = styled.div`
@@ -37,9 +33,13 @@ interface Props {
 export const Header = ({ gameState }: Props) => {
   return (
     <Wrapper>
-      <Creator>{gameState.creator.nick}: 0</Creator>
+      <Creator>
+        {gameState.creator.nick}: {gameState.creatorScore}
+      </Creator>
 
-      <Oponent>{gameState.oponent.nick}: 0</Oponent>
+      <Oponent>
+        {gameState.oponent.nick}: {gameState.oponentScore}
+      </Oponent>
     </Wrapper>
   );
 };

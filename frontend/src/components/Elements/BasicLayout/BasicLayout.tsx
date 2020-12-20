@@ -14,12 +14,7 @@ const Wrapper = styled.div<{ areChildrenCentered?: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background: ${styles.colors.mainOrange};
-  background: linear-gradient(
-    to top,
-    ${styles.colors.mainOrange},
-    ${styles.colors.mainYellow}
-  );
+  ${styles.helpers.orangeGradient};
 
   > div {
     width: 100%;
