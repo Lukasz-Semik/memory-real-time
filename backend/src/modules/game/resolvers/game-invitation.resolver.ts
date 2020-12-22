@@ -1,34 +1,27 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
 import { GameEntity } from 'src/entities/game.entity';
 
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import {
   GameDataDto,
   GameInvitationDataDto,
   InvitationResponse,
-} from './dto/game';
-import { GameService } from './game.service';
+} from '../dto/game';
+import { GameInvitationService } from '../services/game-invitation.service';
+import { GameService } from '../services/game.service';
 
 const pubSub = new PubSub();
 
 @Resolver(() => GameEntity)
-export class GameResolver {
-  constructor(private readonly gameService: GameService) {}
-
-  @Query(() => GameDataDto)
-  @UseGuards(JwtAuthGuard)
-  async getGame(
-    @Args('gameId') gameId: string,
-    @CurrentUserId() userId: string
-  ) {
-    const gameData = await this.gameService.getGameData(gameId, userId);
-
-    return gameData;
-  }
+export class GameInvitationResolver {
+  constructor(
+    private readonly gameService: GameService,
+    private readonly gameInvitationService: GameInvitationService
+  ) {}
 
   @Mutation(() => GameDataDto)
   @UseGuards(JwtAuthGuard)
@@ -55,7 +48,7 @@ export class GameResolver {
     @Args('gameId') gameId: string,
     @CurrentUserId() userId: string
   ) {
-    const gameData = await this.gameService.confirmGameInvitation(
+    const gameData = await this.gameInvitationService.confirmGameInvitation(
       gameId,
       userId
     );

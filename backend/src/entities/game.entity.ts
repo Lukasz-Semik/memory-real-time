@@ -6,6 +6,7 @@ import {
 } from 'typeorm';
 
 import { Player } from 'src/types/player';
+import { defaultTiles, Tiles } from 'src/types/game';
 
 @Entity('game')
 export class GameEntity {
@@ -28,6 +29,12 @@ export class GameEntity {
 
   @Column({ type: 'int', default: 0 })
   oponentScore: number;
+
+  @Column({
+    type: 'simple-json',
+    default: defaultTiles,
+  })
+  tiles: Tiles;
 
   @CreateDateColumn({
     type: 'timestamp',
