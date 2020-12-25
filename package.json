@@ -1,6 +1,7 @@
 {
   "private": true,
   "workspaces": [
+    "global-types",
     "backend",
     "frontend"
   ],
@@ -9,6 +10,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "global-types": "yarn workspace global-types",
     "frontend": "yarn workspace frontend",
     "backend": "yarn workspace backend",
     "dev:fe": "yarn frontend start",

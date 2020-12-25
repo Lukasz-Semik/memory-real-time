@@ -1,16 +1,13 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Subscription } from '@nestjs/graphql';
+import { InvitationResponse } from 'global-types';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
 import { GameEntity } from 'src/entities/game.entity';
 
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import {
-  GameDataDto,
-  GameInvitationDataDto,
-  InvitationResponse,
-} from '../dto/game';
+import { GameDataDto, GameInvitationDataDto } from '../dto/game';
 import { GameInvitationService } from '../services/game-invitation.service';
 import { GameService } from '../services/game.service';
 

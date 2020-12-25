@@ -12,10 +12,6 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-  },
-  "references": [
-    {
-      "path": "../global-types"
-    }
-  ]
+    "composite": true
+  }
 }

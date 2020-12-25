@@ -1,13 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { defaultTiles, Player } from 'global-types';
 import { random, shuffle } from 'lodash';
 import { Repository } from 'typeorm';
 
 import { GameEntity } from 'src/entities/game.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { throwError } from 'src/helpers/throwError';
-import { defaultTiles } from 'src/types/game';
-import { Player } from 'src/types/player';
 
 @Injectable()
 export class GameService {
