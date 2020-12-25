@@ -15,6 +15,7 @@ const GET_GAME_DATA = gql`
       currentPlayer
       creatorScore
       oponentScore
+      tiles
       oponent {
         id
         nick
@@ -41,7 +42,7 @@ export const GamePanel = () => {
   useEffect(() => {
     fetch();
   }, [fetch]);
-
+  console.log(data?.getGame);
   useEffect(() => {
     if (data) {
       setGameState(data.getGame);

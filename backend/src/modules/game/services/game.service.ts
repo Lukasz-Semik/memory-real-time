@@ -1,11 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { random } from 'lodash';
+import { random, shuffle } from 'lodash';
 import { Repository } from 'typeorm';
 
 import { GameEntity } from 'src/entities/game.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { throwError } from 'src/helpers/throwError';
+import { defaultTiles } from 'src/types/game';
 import { Player } from 'src/types/player';
 
 @Injectable()
@@ -28,13 +29,14 @@ export class GameService {
 
     const creator = await this.userRepository.findOne(game.creatorId);
     const oponent = await this.userRepository.findOne(game.oponentId);
-
+    console.log({ game });
     return {
       gameId: game.id,
       roundCount: game.roundCount,
       currentPlayer: game.currentPlayer,
       creatorScore: game.creatorScore,
       oponentScore: game.oponentScore,
+      tiles: game.tiles,
       creator: {
         id: creator.id,
         nick: creator.nick,
@@ -68,6 +70,7 @@ export class GameService {
     const createdGame = await this.gameRepository.save({
       ...newGame,
       currentPlayer: [Player.Creator, Player.Oponent][random(0, 1)],
+      tiles: shuffle(defaultTiles),
       oponentId,
       creatorId: userId,
     });
@@ -78,33 +81,6 @@ export class GameService {
         id: currentUser.id,
         nick: currentUser.nick,
         email: currentUser.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
-    };
-  }
-
-  async confirmGameInvitation(gameId: string, userId: string) {
-    const game = await this.gameRepository.findOne(gameId);
-
-    if (game.oponentId !== userId) {
-      throwError(HttpStatus.BAD_REQUEST, {
-        msg: 'user is not the oponent',
-      });
-    }
-
-    const creator = await this.userRepository.findOne(game.creatorId);
-    const oponent = await this.userRepository.findOne(game.oponentId);
-
-    return {
-      gameId: game.id,
-      creator: {
-        id: creator.id,
-        nick: creator.nick,
-        email: creator.email,
       },
       oponent: {
         id: oponent.id,

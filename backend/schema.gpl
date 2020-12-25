@@ -26,6 +26,12 @@ type FriendsDataChangedDto {
   invitedFriends: [UserDto!]
 }
 
+type BoardDto {
+  id: String!
+  name: String!
+  markedBy: Boolean
+}
+
 type GameDataDto {
   gameId: String!
   oponent: UserDto!
@@ -34,6 +40,7 @@ type GameDataDto {
   currentPlayer: String!
   creatorScore: Float!
   oponentScore: Float!
+  tiles: [BoardDto!]!
 }
 
 type GameInvitationDataDto {

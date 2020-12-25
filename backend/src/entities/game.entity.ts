@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { defaultTiles, Tiles } from 'src/types/game';
 import { Player } from 'src/types/player';
 
 @Entity('game')
@@ -28,6 +29,15 @@ export class GameEntity {
 
   @Column({ type: 'int', default: 0 })
   oponentScore: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  firstTileShot: string;
+
+  @Column({
+    type: 'simple-json',
+    default: defaultTiles,
+  })
+  tiles: Tiles;
 
   @CreateDateColumn({
     type: 'timestamp',
