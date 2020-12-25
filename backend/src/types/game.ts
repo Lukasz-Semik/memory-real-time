@@ -5,6 +5,10 @@ enum TileName {
   B = 'B',
   C = 'C',
   D = 'D',
+  E = 'E',
+  F = 'F',
+  G = 'G',
+  H = 'H',
 }
 
 export interface Tile<T = string> {
@@ -21,7 +25,15 @@ export type Tiles = [
   Tile<TileName.C>,
   Tile<TileName.C>,
   Tile<TileName.D>,
-  Tile<TileName.D>
+  Tile<TileName.D>,
+  Tile<TileName.E>,
+  Tile<TileName.E>,
+  Tile<TileName.F>,
+  Tile<TileName.F>,
+  Tile<TileName.G>,
+  Tile<TileName.G>,
+  Tile<TileName.H>,
+  Tile<TileName.H>
 ];
 
 export const defaultTiles: Tiles = [
@@ -63,6 +75,46 @@ export const defaultTiles: Tiles = [
   {
     id: `${TileName.D}-2`,
     name: TileName.D,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.E}-1`,
+    name: TileName.E,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.E}-2`,
+    name: TileName.E,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.F}-1`,
+    name: TileName.F,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.F}-2`,
+    name: TileName.F,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.G}-1`,
+    name: TileName.G,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.G}-2`,
+    name: TileName.G,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.H}-1`,
+    name: TileName.H,
+    markedBy: null,
+  },
+  {
+    id: `${TileName.H}-2`,
+    name: TileName.H,
     markedBy: null,
   },
 ];
