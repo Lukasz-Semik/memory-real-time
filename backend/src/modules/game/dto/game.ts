@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { InvitationResponse, Player } from 'global-types';
 
 import { UserDto } from 'src/modules/user/dto/user.dto';
-import { Player } from 'src/types/player';
 
 @ObjectType()
 export class BoardDto {
@@ -20,14 +20,6 @@ export class GameDataDto {
   @Field(type => Number) readonly oponentScore: number;
   @Field(type => [BoardDto]) readonly tiles: BoardDto[];
 }
-
-export enum InvitationResponse {
-  Invited = 'invited',
-  InvitationConfirmed = 'invitationConfirmed',
-  InvitationRejected = 'invitationRejected',
-  InvitationCancelled = 'invitationCancelled',
-}
-
 @ObjectType()
 export class GameInvitationDataDto {
   @Field(type => String) readonly message: string;

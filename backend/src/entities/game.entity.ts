@@ -1,12 +1,10 @@
+import { defaultTiles, Player, Tiles } from 'global-types';
 import {
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-import { defaultTiles, Tiles } from 'src/types/game';
-import { Player } from 'src/types/player';
 
 @Entity('game')
 export class GameEntity {

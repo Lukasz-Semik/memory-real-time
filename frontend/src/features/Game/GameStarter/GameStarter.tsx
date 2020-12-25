@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { InvitationResponse } from 'global-types';
 
 import { useModalState } from 'src/hooks/useModalState';
 import { User } from 'src/types/user';
@@ -10,7 +11,6 @@ import {
 } from 'src/components/Elements/ToastElement';
 
 import { GameContext } from '../GameContext/GameContext';
-import { InvitationResponse } from '../types';
 import { GameInvitationModal } from './GameInvitationModal/GameInvitationModal';
 import { GameWaitingModal } from './GameWaitingModal/GameWaitingModal';
 

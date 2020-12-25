@@ -20,6 +20,11 @@
     "jsx": "react",
     "baseUrl": "./",
   },
+  "references": [
+    {
+      "path": "../global-types"
+    }
+  ],
   "include": [
     "src"
   ]

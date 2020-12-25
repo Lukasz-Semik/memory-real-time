@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FetchResult, MutationFunctionOptions } from '@apollo/client';
+import { InvitationResponse } from 'global-types';
 
 import {
   notifyError,
   notifyWarning,
 } from 'src/components/Elements/ToastElement';
 
-import { GameState, InvitationResponse } from '../types';
+import { GameState } from '../types';
 import { GameInvitationToast } from './GameInvitationToast';
 import { useGameInvitation } from './useGameInvitation';
 
