@@ -18,8 +18,16 @@ export class GameDataDto {
   @Field(type => String) readonly currentPlayer: Player;
   @Field(type => Number) readonly creatorScore: number;
   @Field(type => Number) readonly oponentScore: number;
+  @Field(type => String) readonly firstTileShot: string;
   @Field(type => [BoardDto]) readonly tiles: BoardDto[];
 }
+
+@ObjectType()
+export class GameChangedDataDto {
+  @Field(type => GameDataDto) readonly gameData: GameDataDto;
+  @Field(type => String) readonly notifiedPlayer: Player;
+}
+
 @ObjectType()
 export class GameInvitationDataDto {
   @Field(type => String) readonly message: string;

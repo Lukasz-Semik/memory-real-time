@@ -35,6 +35,7 @@ export class GameService {
       currentPlayer: game.currentPlayer,
       creatorScore: game.creatorScore,
       oponentScore: game.oponentScore,
+      firstTileShot: game.firstTileShot,
       tiles: game.tiles,
       creator: {
         id: creator.id,
@@ -110,4 +111,10 @@ export class GameService {
       },
     };
   }
+
+  // async markTile(gameId: string, tileId: string, userId: string) {
+  //   const game = await this.gameRepository.findOne(gameId);
+  //   // first shot -> notify next player, mark
+  //   // second shot -> notify "new" currentPlayer
+  // }
 }
