@@ -20,15 +20,11 @@ export class GameService {
   async getGameData(gameId: string, userId: string) {
     const game = await this.gameRepository.findOne(gameId);
 
-    if (![game.oponentId, game.creatorId].includes(userId)) {
+    if (![game.oponent.id, game.creator.id].includes(userId)) {
       throwError(HttpStatus.BAD_REQUEST, {
         msg: 'user does not belong to this game',
       });
     }
-
-    const creator = await this.userRepository.findOne(game.creatorId);
-    const oponent = await this.userRepository.findOne(game.oponentId);
-    console.log({ game });
     return {
       gameId: game.id,
       roundCount: game.roundCount,
@@ -37,16 +33,8 @@ export class GameService {
       oponentScore: game.oponentScore,
       firstTileShot: game.firstTileShot,
       tiles: game.tiles,
-      creator: {
-        id: creator.id,
-        nick: creator.nick,
-        email: creator.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
+      creator: game.creator,
+      oponent: game.oponent,
     };
   }
 
@@ -71,44 +59,34 @@ export class GameService {
       ...newGame,
       currentPlayer: [Player.Creator, Player.Oponent][random(0, 1)],
       tiles: shuffle(defaultTiles),
-      oponentId,
-      creatorId: userId,
+      oponent: {
+        id: oponent.id,
+        email: oponent.email,
+        nick: oponent.nick,
+      },
+      creator: {
+        id: currentUser.id,
+        email: currentUser.email,
+        nick: currentUser.nick,
+      },
     });
 
     return {
       gameId: createdGame.id,
-      creator: {
-        id: currentUser.id,
-        nick: currentUser.nick,
-        email: currentUser.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
+      creator: createdGame.creator,
+      oponent: createdGame.oponent,
     };
   }
 
   async deleteGame(gameId: string) {
     const game = await this.gameRepository.findOne(gameId);
-    const creator = await this.userRepository.findOne(game.creatorId);
-    const oponent = await this.userRepository.findOne(game.oponentId);
 
     await this.gameRepository.delete(game.id);
 
     return {
       gameId: game.id,
-      creator: {
-        id: creator.id,
-        nick: creator.nick,
-        email: creator.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
+      creator: game.creator,
+      oponent: game.oponent,
     };
   }
 

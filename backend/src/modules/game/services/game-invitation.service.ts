@@ -18,27 +18,16 @@ export class GameInvitationService {
   async confirmGameInvitation(gameId: string, userId: string) {
     const game = await this.gameRepository.findOne(gameId);
 
-    if (game.oponentId !== userId) {
+    if (game.oponent.id !== userId) {
       throwError(HttpStatus.BAD_REQUEST, {
         msg: 'user is not the oponent',
       });
     }
 
-    const creator = await this.userRepository.findOne(game.creatorId);
-    const oponent = await this.userRepository.findOne(game.oponentId);
-
     return {
       gameId: game.id,
-      creator: {
-        id: creator.id,
-        nick: creator.nick,
-        email: creator.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
+      creator: game.creator,
+      oponent: game.oponent,
     };
   }
 }

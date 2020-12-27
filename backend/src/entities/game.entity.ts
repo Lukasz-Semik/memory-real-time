@@ -1,4 +1,4 @@
-import { defaultTiles, Player, Tiles } from 'global-types';
+import { defaultTiles, Player, PlayerData, Tiles } from 'global-types';
 import {
   Column,
   CreateDateColumn,
@@ -6,15 +6,21 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+const defaultPlayerData: PlayerData = {
+  id: '',
+  email: '',
+  nick: '',
+};
+
 @Entity('game')
 export class GameEntity {
   @PrimaryGeneratedColumn('uuid') id: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  creatorId: string;
+  @Column({ type: 'simple-json', default: defaultPlayerData })
+  creator: PlayerData;
 
-  @Column({ type: 'varchar', length: 255 })
-  oponentId: string;
+  @Column({ type: 'simple-json', default: defaultPlayerData })
+  oponent: PlayerData;
 
   @Column({ type: 'int', default: 0 })
   roundCount: number;
