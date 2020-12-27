@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { defaultTiles, Player } from 'global-types';
-import { random, shuffle } from 'lodash';
+import { random, shuffle, findIndex } from 'lodash';
 import { Repository } from 'typeorm';
 
 import { GameEntity } from 'src/entities/game.entity';
@@ -26,12 +26,7 @@ export class GameService {
       });
     }
     return {
-      gameId: game.id,
-      roundCount: game.roundCount,
-      currentPlayer: game.currentPlayer,
-      creatorScore: game.creatorScore,
-      oponentScore: game.oponentScore,
-      firstTileShot: game.firstTileShot,
+      ...game,
       tiles: game.tiles,
       creator: game.creator,
       oponent: game.oponent,
@@ -84,15 +79,77 @@ export class GameService {
     await this.gameRepository.delete(game.id);
 
     return {
-      gameId: game.id,
+      id: game.id,
       creator: game.creator,
       oponent: game.oponent,
     };
   }
 
-  // async markTile(gameId: string, tileId: string, userId: string) {
-  //   const game = await this.gameRepository.findOne(gameId);
-  //   // first shot -> notify next player, mark
-  //   // second shot -> notify "new" currentPlayer
-  // }
+  async markTile(gameId: string, tileId: string, userId: string) {
+    const game = await this.gameRepository.findOne(gameId);
+    // first shot -> notify next player, mark tile, mark firstShot
+    // second shot -> notify "new" currentPlayer
+    const { oponent, creator, tiles, firstTileShot, currentPlayer } = game;
+
+    const newTiles = [...tiles];
+    const nextTile = newTiles.find(tile => tile.id === tileId);
+
+    if (!nextTile) {
+      throwError(HttpStatus.BAD_REQUEST, { msg: 'tile does not exists' });
+    }
+
+    if (!firstTileShot) {
+      nextTile.markedBy = currentPlayer;
+
+      const savedGame = await this.gameRepository.save({
+        ...game,
+        creator,
+        oponent,
+        tiles: newTiles,
+        firstTileShot: tileId,
+      });
+
+      return {
+        notifiedPlayer:
+          currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+        gameData: savedGame,
+      };
+    }
+
+    const previousTile = newTiles.find(tile => tile.id === firstTileShot);
+    console.log({ previousTile, firstTileShot });
+    if (previousTile.name !== nextTile.name) {
+      previousTile.markedBy = null;
+
+      const savedGame = await this.gameRepository.save({
+        ...game,
+        creator,
+        oponent,
+        tiles: newTiles,
+        firstTileShot: null,
+        roundCount: game.roundCount + 1,
+        currentPlayer:
+          currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+      });
+      console.log({ savedGame });
+      return {
+        notifiedPlayer: savedGame.currentPlayer,
+        gameData: savedGame,
+      };
+    }
+
+    // const previoustTileIndex = findIndex(tiles, tile => tile.id === firstTileShot)
+
+    // const previousTile = tiles.find(tile => tile.id === firstTileShot);
+    // const nextTile = tiles.find(tile => tile.id === tileId);
+
+    // if (previousTile.name !== nextTile.name) {
+
+    // }
+
+    // return {
+    //   notifiedPlayer: Player.Creator,
+    //   gameData: game,
+    // };
+  }
 }

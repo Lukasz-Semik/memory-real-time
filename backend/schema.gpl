@@ -29,18 +29,18 @@ type FriendsDataChangedDto {
 type BoardDto {
   id: String!
   name: String!
-  markedBy: Boolean
+  markedBy: String
 }
 
 type GameDataDto {
-  gameId: String!
+  id: String!
   oponent: UserDto!
   creator: UserDto!
   roundCount: Float!
   currentPlayer: String!
   creatorScore: Float!
   oponentScore: Float!
-  firstTileShot: String!
+  firstTileShot: String
   tiles: [BoardDto!]!
 }
 
@@ -76,7 +76,7 @@ type Mutation {
   confirmGameInvitation(gameId: String!): Boolean!
   rejectGameInvitation(gameId: String!): Boolean!
   cancelGameInvitation(gameId: String!): Boolean!
-  markTile(tileId: String!, gameId: String!): GameDataDto!
+  markTile(tileId: String!, gameId: String!): GameChangedDataDto!
 }
 
 input CreateUserInput {

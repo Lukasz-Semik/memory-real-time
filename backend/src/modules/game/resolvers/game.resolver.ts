@@ -26,23 +26,26 @@ export class GameResolver {
     return gameData;
   }
 
-  @Mutation(() => GameDataDto)
+  @Mutation(() => GameChangedDataDto)
   @UseGuards(JwtAuthGuard)
   async markTile(
     @Args('gameId') gameId: string,
     @Args('tileId') tileId: string,
     @CurrentUserId() userId: string
   ) {
-    // const gameData = await this.gameService.markTile(gameId, tileId, userId);
+    const markTileResult = await this.gameService.markTile(
+      gameId,
+      tileId,
+      userId
+    );
+    console.log({ markTileResult });
     pubSub.publish('gameChanged', {
       gameChanged: {
         gameId,
       },
     });
 
-    return {
-      gameId,
-    };
+    return markTileResult;
   }
 
   @Subscription(() => GameChangedDataDto, {
@@ -52,14 +55,14 @@ export class GameResolver {
       // second shot -> notify "new" currentPlayer
       const { userId, gameId: subscribedGameId } = variables;
       const {
-        gameId,
+        id,
         currentPlayer,
         creator,
         oponent,
         firstTileShot,
       } = payload.gameChanged;
 
-      if (gameId !== subscribedGameId) {
+      if (id !== subscribedGameId) {
         return false;
       }
 
