@@ -16,7 +16,7 @@ import {
   CREATE_GAME,
   GAME_INVITATION_SUBSCRIPTION,
   REJECT_GAME_INVITATION,
-} from './queries';
+} from './gql';
 
 export const useGameInvitation = () => {
   const currentUser = useGetCurrentUser();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
@@ -9,13 +9,7 @@ import { BasicLayout } from 'src/components/Elements/BasicLayout/BasicLayout';
 import { ButtonElement } from 'src/components/Elements/ButtonElement/ButtonElement';
 import { LoaderElement } from 'src/components/Elements/LoaderElement/LoaderElement';
 
-const CONFIRM_USER = gql`
-  mutation ConfirmUser($token: String!) {
-    confirmUser(token: $token) {
-      nick
-    }
-  }
-`;
+import { CONFIRM_USER } from './gql';
 
 const Title = styled.h2`
   font-size: ${rem(30)};

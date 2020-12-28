@@ -36,27 +36,29 @@ export const GAME_INVITATION_SUBSCRIPTION = gql`
 export const CREATE_GAME = gql`
   mutation createGame($oponentId: String!) {
     createGame(oponentId: $oponentId) {
-      id
-      currentPlayer
-      roundCount
-      tiles {
-        markedBy
+      gameData {
         id
-        name
-      }
-      score {
-        creator
-        oponent
-      }
-      oponent {
-        id
-        nick
-        email
-      }
-      creator {
-        id
-        nick
-        email
+        currentPlayer
+        roundCount
+        tiles {
+          markedBy
+          id
+          name
+        }
+        score {
+          creator
+          oponent
+        }
+        oponent {
+          id
+          nick
+          email
+        }
+        creator {
+          id
+          nick
+          email
+        }
       }
     }
   }

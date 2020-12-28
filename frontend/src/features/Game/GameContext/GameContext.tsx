@@ -9,12 +9,13 @@ import {
   notifyWarning,
 } from 'src/components/Elements/ToastElement';
 
-import { GameState, InvitationData, InvitationState } from '../types';
+import { GameState, InvitationState } from '../types';
 import { GameInvitationToast } from './GameInvitationToast';
 import { useGameInvitation } from './useGameInvitation';
 
 interface ContextValues {
   gameState?: GameState;
+  invitationState?: InvitationState;
   createdGameId?: string;
   createGame: (
     options?: MutationFunctionOptions<any, Record<string, any>>
@@ -50,6 +51,10 @@ export const GameContextProvider = ({
   useEffect(() => {
     if (gameInvitatioData) {
       setGameState(gameInvitatioData.gameData);
+      setInvitationState({
+        message: gameInvitatioData.message,
+        invitationResponse: gameInvitatioData.invitationResponse,
+      });
 
       if (gameInvitatioData.invitationResponse === InvitationResponse.Invited) {
         toastIdRef.current = notifyWarning(
@@ -77,6 +82,7 @@ export const GameContextProvider = ({
         InvitationResponse.InvitationCancelled
       ) {
         setGameState(undefined);
+        setInvitationState(undefined);
         dismissConfirmationToast();
         notifyError('Game has been dismissed');
       }
@@ -93,6 +99,7 @@ export const GameContextProvider = ({
     <GameContext.Provider
       value={{
         gameState,
+        invitationState,
         createGame,
         rejectGame,
         cancelGame,

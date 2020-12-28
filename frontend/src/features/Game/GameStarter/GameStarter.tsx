@@ -26,7 +26,9 @@ export const GameStarter = ({ closeModal }) => {
     closeWaitingModal,
   ] = useModalState();
 
-  const { gameState, createGame, setGameState } = useContext(GameContext);
+  const { gameState, invitationState, createGame, setGameState } = useContext(
+    GameContext
+  );
   const history = useHistory();
 
   const inviteUser = useCallback(
@@ -40,25 +42,32 @@ export const GameStarter = ({ closeModal }) => {
 
   useEffect(() => {
     if (
-      gameState?.invitationResponse === InvitationResponse.InvitationConfirmed
+      invitationState?.invitationResponse ===
+      InvitationResponse.InvitationConfirmed
     ) {
-      notifySuccess(
-        `${gameState?.gameData.oponent?.nick} accepted game invitation`
-      );
-      history.push(routes.game(gameState?.gameData.id));
+      notifySuccess(`${gameState?.oponent?.nick} accepted game invitation`);
+      history.push(routes.game(gameState?.id));
       return;
     }
 
     if (
       isWaitingModalOpen &&
-      gameState?.invitationResponse === InvitationResponse.InvitationRejected
+      invitationState?.invitationResponse ===
+        InvitationResponse.InvitationRejected
     ) {
       notifyError('Game has been dissmised');
       closeWaitingModal();
       setGameState(undefined);
       return;
     }
-  }, [gameState, history, closeWaitingModal, isWaitingModalOpen, setGameState]);
+  }, [
+    gameState,
+    history,
+    closeWaitingModal,
+    isWaitingModalOpen,
+    setGameState,
+    invitationState,
+  ]);
 
   return (
     <>
