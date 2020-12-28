@@ -3,14 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { GameEntity } from 'src/entities/game.entity';
-import { UserEntity } from 'src/entities/user.entity';
 import { throwError } from 'src/helpers/throwError';
 
 @Injectable()
 export class GameInvitationService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(GameEntity)
     private readonly gameRepository: Repository<GameEntity>
   ) {}
@@ -24,10 +21,6 @@ export class GameInvitationService {
       });
     }
 
-    return {
-      gameId: game.id,
-      creator: game.creator,
-      oponent: game.oponent,
-    };
+    return game;
   }
 }

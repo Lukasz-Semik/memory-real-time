@@ -1,4 +1,4 @@
-import { defaultTiles, Player, PlayerData, Tiles } from 'global-types';
+import { defaultTiles, Player, PlayerData, Score, Tiles } from 'global-types';
 import {
   Column,
   CreateDateColumn,
@@ -12,6 +12,10 @@ const defaultPlayerData: PlayerData = {
   nick: '',
 };
 
+const defaultScore: Score = {
+  oponent: 0,
+  creator: 0,
+};
 @Entity('game')
 export class GameEntity {
   @PrimaryGeneratedColumn('uuid') id: string;
@@ -33,6 +37,9 @@ export class GameEntity {
 
   @Column({ type: 'int', default: 0 })
   oponentScore: number;
+
+  @Column({ type: 'simple-json', default: defaultScore })
+  score: Score;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   firstTileShot: string;

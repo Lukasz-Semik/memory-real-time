@@ -9,7 +9,7 @@ import {
   notifyWarning,
 } from 'src/components/Elements/ToastElement';
 
-import { GameState } from '../types';
+import { GameState, InvitationData, InvitationState } from '../types';
 import { GameInvitationToast } from './GameInvitationToast';
 import { useGameInvitation } from './useGameInvitation';
 
@@ -30,6 +30,7 @@ export const GameContextProvider = ({
   children,
 }: React.PropsWithChildren<{}>) => {
   const [gameState, setGameState] = useState<GameState>();
+  const [invitationState, setInvitationState] = useState<InvitationState>();
   const toastIdRef = useRef<string | number>(null);
   const history = useHistory();
 
@@ -48,19 +49,19 @@ export const GameContextProvider = ({
 
   useEffect(() => {
     if (gameInvitatioData) {
-      setGameState(gameInvitatioData);
+      setGameState(gameInvitatioData.gameData);
 
       if (gameInvitatioData.invitationResponse === InvitationResponse.Invited) {
         toastIdRef.current = notifyWarning(
           <GameInvitationToast
             message={gameInvitatioData.message}
             confirm={() =>
-              confirmGame(gameInvitatioData.gameId).then(
+              confirmGame(gameInvitatioData.gameData.id).then(
                 dismissConfirmationToast
               )
             }
             reject={() =>
-              rejectGame(gameInvitatioData.gameId).then(
+              rejectGame(gameInvitatioData.gameData.id).then(
                 dismissConfirmationToast
               )
             }

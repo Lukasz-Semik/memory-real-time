@@ -10,12 +10,18 @@ import { Header } from './Header/Header';
 const GET_GAME_DATA = gql`
   query getGame($gameId: String!) {
     getGame(gameId: $gameId) {
-      gameId
-      roundCount
+      id
       currentPlayer
-      creatorScore
-      oponentScore
-      tiles
+      roundCount
+      tiles {
+        markedBy
+        id
+        name
+      }
+      score {
+        creator
+        oponent
+      }
       oponent {
         id
         nick
@@ -42,7 +48,7 @@ export const GamePanel = () => {
   useEffect(() => {
     fetch();
   }, [fetch]);
-  console.log(data?.getGame);
+
   useEffect(() => {
     if (data) {
       setGameState(data.getGame);

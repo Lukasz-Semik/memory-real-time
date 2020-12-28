@@ -7,7 +7,7 @@ import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 import { GameEntity } from 'src/entities/game.entity';
 
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { GameDataDto, GameInvitationDataDto } from '../dto/game';
+import { GameDto, GameInvitationDataDto } from '../dto/game';
 import { GameInvitationService } from '../services/game-invitation.service';
 import { GameService } from '../services/game.service';
 
@@ -20,7 +20,7 @@ export class GameInvitationResolver {
     private readonly gameInvitationService: GameInvitationService
   ) {}
 
-  @Mutation(() => GameDataDto)
+  @Mutation(() => GameDto)
   @UseGuards(JwtAuthGuard)
   async createGame(
     @Args('oponentId') oponentId: string,
@@ -32,11 +32,11 @@ export class GameInvitationResolver {
       gameInvitation: {
         invitationResponse: InvitationResponse.Invited,
         message: `Wanna play with ${gameData.creator.nick}?`,
-        ...gameData,
+        gameData,
       },
     });
 
-    return gameData;
+    return { gameData };
   }
 
   @Mutation(() => Boolean)
@@ -54,7 +54,7 @@ export class GameInvitationResolver {
       gameInvitation: {
         invitationResponse: InvitationResponse.InvitationConfirmed,
         message: `${gameData.oponent.nick} accepted game invitation`,
-        ...gameData,
+        gameData,
       },
     });
 
@@ -64,13 +64,13 @@ export class GameInvitationResolver {
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async rejectGameInvitation(@Args('gameId') gameId: string) {
-    const rejectedGameData = await this.gameService.deleteGame(gameId);
+    const gameData = await this.gameService.deleteGame(gameId);
 
     pubSub.publish('gameInvitation', {
       gameInvitation: {
         invitationResponse: InvitationResponse.InvitationRejected,
-        message: `${rejectedGameData.oponent.nick} rejected game invitation`,
-        ...rejectedGameData,
+        message: `${gameData.oponent.nick} rejected game invitation`,
+        gameData,
       },
     });
 
@@ -80,13 +80,13 @@ export class GameInvitationResolver {
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async cancelGameInvitation(@Args('gameId') gameId: string) {
-    const cancelledGameData = await this.gameService.deleteGame(gameId);
+    const gameData = await this.gameService.deleteGame(gameId);
 
     pubSub.publish('gameInvitation', {
       gameInvitation: {
         invitationResponse: InvitationResponse.InvitationCancelled,
-        message: `${cancelledGameData.creator.nick} rejected game invitation`,
-        ...cancelledGameData,
+        message: `${gameData.creator.nick} rejected game invitation`,
+        gameData,
       },
     });
 
@@ -96,7 +96,8 @@ export class GameInvitationResolver {
   @Subscription(() => GameInvitationDataDto, {
     nullable: true,
     filter(this: any, payload, variables) {
-      const { invitationResponse, oponent, creator } = payload.gameInvitation;
+      const { invitationResponse, gameData } = payload.gameInvitation;
+      const { oponent, creator } = gameData;
       if (
         [
           InvitationResponse.InvitationRejected,

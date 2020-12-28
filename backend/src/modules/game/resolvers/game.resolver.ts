@@ -1,13 +1,12 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { Player } from 'global-types';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
 import { GameEntity } from 'src/entities/game.entity';
 
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { GameChangedDataDto, GameDataDto } from '../dto/game';
+import { GameChangedDataDto, GameDto } from '../dto/game';
 import { GameService } from '../services/game.service';
 
 const pubSub = new PubSub();
@@ -15,7 +14,7 @@ const pubSub = new PubSub();
 export class GameResolver {
   constructor(private readonly gameService: GameService) {}
 
-  @Query(() => GameDataDto)
+  @Query(() => GameDto)
   @UseGuards(JwtAuthGuard)
   async getGame(
     @Args('gameId') gameId: string,
@@ -23,7 +22,7 @@ export class GameResolver {
   ) {
     const gameData = await this.gameService.getGameData(gameId, userId);
 
-    return gameData;
+    return { gameData };
   }
 
   @Mutation(() => GameChangedDataDto)
@@ -38,11 +37,9 @@ export class GameResolver {
       tileId,
       userId
     );
-    console.log({ markTileResult });
+
     pubSub.publish('gameChanged', {
-      gameChanged: {
-        gameId,
-      },
+      gameChanged: markTileResult,
     });
 
     return markTileResult;
@@ -50,27 +47,15 @@ export class GameResolver {
 
   @Subscription(() => GameChangedDataDto, {
     nullable: true,
-    filter(this: any, payload: { gameChanged: GameDataDto }, variables) {
-      // first shot -> notify next player
-      // second shot -> notify "new" currentPlayer
+    filter(this: any, payload: { gameChanged: GameChangedDataDto }, variables) {
       const { userId, gameId: subscribedGameId } = variables;
-      const {
-        id,
-        currentPlayer,
-        creator,
-        oponent,
-        firstTileShot,
-      } = payload.gameChanged;
+      const { gameData, notifiedPlayer } = payload.gameChanged;
 
-      if (id !== subscribedGameId) {
+      if (gameData.id !== subscribedGameId) {
         return false;
       }
 
-      if (firstTileShot) {
-      }
-      return currentPlayer === Player.Creator
-        ? userId === oponent.id
-        : userId === creator.id;
+      return userId === gameData[notifiedPlayer].id;
     },
   })
   gameChanged(@Args('userId') userId: string, @Args('gameId') gameId: string) {

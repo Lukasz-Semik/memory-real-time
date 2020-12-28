@@ -8,3 +8,8 @@ export interface PlayerData {
   email: string;
   nick: string;
 }
+
+export interface Score {
+  oponent: number;
+  creator: number;
+}

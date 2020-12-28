@@ -42,8 +42,10 @@ export const GameStarter = ({ closeModal }) => {
     if (
       gameState?.invitationResponse === InvitationResponse.InvitationConfirmed
     ) {
-      notifySuccess(`${gameState?.oponent?.nick} accepted game invitation`);
-      history.push(routes.game(gameState?.gameId));
+      notifySuccess(
+        `${gameState?.gameData.oponent?.nick} accepted game invitation`
+      );
+      history.push(routes.game(gameState?.gameData.id));
       return;
     }
 
