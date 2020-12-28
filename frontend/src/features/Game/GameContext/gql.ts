@@ -3,18 +3,31 @@ import { gql } from '@apollo/client';
 export const GAME_INVITATION_SUBSCRIPTION = gql`
   subscription gameInvitation($id: String!) {
     gameInvitation(id: $id) {
-      gameId
       invitationResponse
       message
-      oponent {
+      gameData {
         id
-        nick
-        email
-      }
-      creator {
-        id
-        nick
-        email
+        currentPlayer
+        roundCount
+        tiles {
+          markedBy
+          id
+          name
+        }
+        score {
+          creator
+          oponent
+        }
+        oponent {
+          id
+          nick
+          email
+        }
+        creator {
+          id
+          nick
+          email
+        }
       }
     }
   }
@@ -23,16 +36,29 @@ export const GAME_INVITATION_SUBSCRIPTION = gql`
 export const CREATE_GAME = gql`
   mutation createGame($oponentId: String!) {
     createGame(oponentId: $oponentId) {
-      gameId
-      oponent {
+      gameData {
         id
-        nick
-        email
-      }
-      creator {
-        id
-        nick
-        email
+        currentPlayer
+        roundCount
+        tiles {
+          markedBy
+          id
+          name
+        }
+        score {
+          creator
+          oponent
+        }
+        oponent {
+          id
+          nick
+          email
+        }
+        creator {
+          id
+          nick
+          email
+        }
       }
     }
   }

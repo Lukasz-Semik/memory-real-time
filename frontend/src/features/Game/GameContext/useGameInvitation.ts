@@ -9,30 +9,30 @@ import {
   notifySuccess,
 } from 'src/components/Elements/ToastElement';
 
-import { GameState } from '../types';
+import { InvitationData } from '../types';
 import {
   CANCEL_GAME_INVITATION,
   CONFIRM_GAME_INVITATION,
   CREATE_GAME,
   GAME_INVITATION_SUBSCRIPTION,
   REJECT_GAME_INVITATION,
-} from './queries';
+} from './gql';
 
 export const useGameInvitation = () => {
   const currentUser = useGetCurrentUser();
   const history = useHistory();
 
   const [createGame, { data: createdGameResponse }] = useMutation<{
-    createGame: GameState;
+    createGame: InvitationData;
   }>(CREATE_GAME);
-  const createdGameId = createdGameResponse?.createGame.gameId;
+  const createdGameId = createdGameResponse?.createGame.gameData.id;
 
   const [confirmGameInvitation] = useMutation(CONFIRM_GAME_INVITATION);
   const [rejectGameInvitation] = useMutation(REJECT_GAME_INVITATION);
   const [cancelGameInvitation] = useMutation(CANCEL_GAME_INVITATION);
 
   const { data: gameInvitationResponse } = useSubscription<{
-    gameInvitation: GameState;
+    gameInvitation: InvitationData;
   }>(GAME_INVITATION_SUBSCRIPTION, {
     variables: { id: currentUser.id },
   });

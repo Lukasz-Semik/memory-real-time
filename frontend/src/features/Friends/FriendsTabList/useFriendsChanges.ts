@@ -9,7 +9,7 @@ import {
   CANCEL_INVITATION,
   REJECT_INVITATION,
   REMOVE_FRIEND,
-} from './queries';
+} from './gql';
 
 export const useFriendsChanges = () => {
   const { setFriendsState } = useContext(NotificationsContext);

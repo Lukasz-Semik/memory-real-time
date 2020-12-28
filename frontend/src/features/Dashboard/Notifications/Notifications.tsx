@@ -6,10 +6,7 @@ import { useGetCurrentUser } from 'src/store/users/selectors';
 import { User } from 'src/types/user';
 import { notifySuccess } from 'src/components/Elements/ToastElement';
 
-import {
-  FETCH_FRIENDS_DATA,
-  FRIENDS_DATA_CHANGED_SUBSCRIPTION,
-} from './queries';
+import { FETCH_FRIENDS_DATA, FRIENDS_DATA_CHANGED_SUBSCRIPTION } from './gql';
 
 interface State {
   inviters: User[];

@@ -1,15 +1,21 @@
-import { InvitationResponse, Player } from 'global-types';
+import { InvitationResponse, Player, Score, Tiles } from 'global-types';
 
 import { User } from 'src/types/user';
 
 export interface GameState {
-  gameId: string;
-  invitationResponse: InvitationResponse;
+  id: string;
   oponent: User;
   creator: User;
-  message: string;
   roundCount: number;
   currentPlayer: Player;
-  creatorScore: number;
-  oponentScore: number;
+  score: Score;
+  tiles: Tiles;
 }
+
+export interface InvitationData {
+  invitationResponse: InvitationResponse;
+  message: string;
+  gameData: GameState;
+}
+
+export type InvitationState = Omit<InvitationData, 'gameData'>;

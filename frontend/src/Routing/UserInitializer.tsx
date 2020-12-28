@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { gql, useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { isEmpty } from 'lodash';
 
 import { MAIN_STORAGE_KEY } from 'src/constants/misc';
@@ -12,16 +12,7 @@ import { getFromLocalStorage } from '../helpers/localStorage';
 import { getIsOnPage } from '../helpers/utils';
 import { useGetCurrentUser } from '../store/users/selectors';
 import { setCurrentUser } from '../store/users/usersSlice';
-
-const FETCH_USER = gql`
-  query FetchUser {
-    me {
-      id
-      nick
-      email
-    }
-  }
-`;
+import { FETCH_USER } from './gql';
 
 interface RenderProps {
   isInitialized: boolean;

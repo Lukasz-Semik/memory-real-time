@@ -29,32 +29,44 @@ type FriendsDataChangedDto {
 type BoardDto {
   id: String!
   name: String!
-  markedBy: Boolean
+  markedBy: String
+}
+
+type ScoreDto {
+  oponent: String!
+  creator: String!
 }
 
 type GameDataDto {
-  gameId: String!
+  id: String!
   oponent: UserDto!
   creator: UserDto!
   roundCount: Float!
   currentPlayer: String!
-  creatorScore: Float!
-  oponentScore: Float!
+  score: ScoreDto!
+  firstTileShot: String
   tiles: [BoardDto!]!
+}
+
+type GameChangedDataDto {
+  gameData: GameDataDto!
+  notifiedPlayer: String!
 }
 
 type GameInvitationDataDto {
   message: String!
-  gameId: String!
-  oponent: UserDto!
-  creator: UserDto!
   invitationResponse: String!
+  gameData: GameDataDto!
+}
+
+type GameDto {
+  gameData: GameDataDto!
 }
 
 type Query {
   me: UserDto!
   getFriendsData: FriendsDataDto!
-  getGame(gameId: String!): GameDataDto!
+  getGame(gameId: String!): GameDto!
 }
 
 type Mutation {
@@ -66,10 +78,11 @@ type Mutation {
   inviteFriend(email: String!): FriendsDataDto!
   removeFriend(friendId: String!): FriendsDataDto!
   cancelInvitation(invitedFriendId: String!): FriendsDataDto!
-  createGame(oponentId: String!): GameDataDto!
+  createGame(oponentId: String!): GameDto!
   confirmGameInvitation(gameId: String!): Boolean!
   rejectGameInvitation(gameId: String!): Boolean!
   cancelGameInvitation(gameId: String!): Boolean!
+  markTile(tileId: String!, gameId: String!): GameChangedDataDto!
 }
 
 input CreateUserInput {
@@ -81,4 +94,5 @@ input CreateUserInput {
 type Subscription {
   friendsDataChanged(id: String!): FriendsDataChangedDto
   gameInvitation(id: String!): GameInvitationDataDto
+  gameChanged(gameId: String!, userId: String!): GameChangedDataDto
 }

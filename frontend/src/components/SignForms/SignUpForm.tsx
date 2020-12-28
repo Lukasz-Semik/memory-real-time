@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { rem } from 'polished';
 
 import { routes } from 'src/constants/routes';
@@ -9,24 +9,17 @@ import { routes } from 'src/constants/routes';
 import { ButtonElement } from '../Elements/ButtonElement/ButtonElement';
 import { InputElement } from '../Elements/InputElement/InputElement';
 import { LinkElement } from '../Elements/LinkElement/LinkElement';
+import { SIGN_UP } from './gql';
 import { ButtonWrapper, FormStyled, InputWrapper, LinkWrapper } from './styled';
 
-const PERFORM_SIGN_UP = gql`
-  mutation PerformSignUp($email: String!, $password: String!, $nick: String!) {
-    createUser(data: { email: $email, password: $password, nick: $nick }) {
-      nick
-    }
-  }
-`;
-
 export const SignUpForm = () => {
-  const [login] = useMutation(PERFORM_SIGN_UP);
+  const [signUp] = useMutation(SIGN_UP);
   const history = useHistory();
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async data => {
     try {
-      const response = await login({
+      const response = await signUp({
         variables: {
           email: data.email,
           password: data.password,

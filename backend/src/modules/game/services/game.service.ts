@@ -20,33 +20,12 @@ export class GameService {
   async getGameData(gameId: string, userId: string) {
     const game = await this.gameRepository.findOne(gameId);
 
-    if (![game.oponentId, game.creatorId].includes(userId)) {
+    if (![game.oponent.id, game.creator.id].includes(userId)) {
       throwError(HttpStatus.BAD_REQUEST, {
         msg: 'user does not belong to this game',
       });
     }
-
-    const creator = await this.userRepository.findOne(game.creatorId);
-    const oponent = await this.userRepository.findOne(game.oponentId);
-    console.log({ game });
-    return {
-      gameId: game.id,
-      roundCount: game.roundCount,
-      currentPlayer: game.currentPlayer,
-      creatorScore: game.creatorScore,
-      oponentScore: game.oponentScore,
-      tiles: game.tiles,
-      creator: {
-        id: creator.id,
-        nick: creator.nick,
-        email: creator.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
-    };
+    return game;
   }
 
   async createGame(oponentId: string, userId: string) {
@@ -70,44 +49,110 @@ export class GameService {
       ...newGame,
       currentPlayer: [Player.Creator, Player.Oponent][random(0, 1)],
       tiles: shuffle(defaultTiles),
-      oponentId,
-      creatorId: userId,
-    });
-
-    return {
-      gameId: createdGame.id,
-      creator: {
-        id: currentUser.id,
-        nick: currentUser.nick,
-        email: currentUser.email,
-      },
       oponent: {
         id: oponent.id,
-        nick: oponent.nick,
         email: oponent.email,
+        nick: oponent.nick,
       },
-    };
+      creator: {
+        id: currentUser.id,
+        email: currentUser.email,
+        nick: currentUser.nick,
+      },
+    });
+
+    return createdGame;
   }
 
   async deleteGame(gameId: string) {
     const game = await this.gameRepository.findOne(gameId);
-    const creator = await this.userRepository.findOne(game.creatorId);
-    const oponent = await this.userRepository.findOne(game.oponentId);
 
     await this.gameRepository.delete(game.id);
 
+    return game;
+  }
+
+  async markTile(gameId: string, tileId: string, userId: string) {
+    const game = await this.gameRepository.findOne(gameId);
+
+    if (!game) {
+      throwError(HttpStatus.NOT_FOUND, { msg: 'game does not exist' });
+    }
+    const { oponent, creator, tiles, firstTileShot, currentPlayer } = game;
+
+    if (game[currentPlayer].id !== userId) {
+      throwError(HttpStatus.CONFLICT, { msg: 'user is not a current player' });
+    }
+
+    const newTiles = [...tiles];
+    const nextTile = newTiles.find(tile => tile.id === tileId);
+
+    if (!nextTile) {
+      throwError(HttpStatus.BAD_REQUEST, { msg: 'tile does not exist' });
+    }
+
+    if (!firstTileShot) {
+      nextTile.markedBy = currentPlayer;
+
+      const savedGame = await this.gameRepository.save({
+        ...game,
+        creator,
+        oponent,
+        tiles: newTiles,
+        firstTileShot: tileId,
+      });
+
+      return {
+        notifiedPlayer:
+          currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+        gameData: savedGame,
+      };
+    }
+
+    const previousTile = newTiles.find(tile => tile.id === firstTileShot);
+
+    if (previousTile.name !== nextTile.name) {
+      previousTile.markedBy = null;
+
+      const savedGame = await this.gameRepository.save({
+        ...game,
+        creator,
+        oponent,
+        tiles: newTiles,
+        firstTileShot: null,
+        roundCount: game.roundCount + 1,
+        currentPlayer:
+          currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+      });
+
+      return {
+        notifiedPlayer: savedGame.currentPlayer,
+        gameData: savedGame,
+      };
+    }
+
+    const currentPlayerScore = game.score[currentPlayer];
+
+    nextTile.markedBy = currentPlayer;
+
+    const savedGame = await this.gameRepository.save({
+      ...game,
+      creator,
+      oponent,
+      tiles: newTiles,
+      firstTileShot: null,
+      roundCount: game.roundCount + 1,
+      score: {
+        ...game.score,
+        [currentPlayer]: currentPlayerScore + 1,
+      },
+      currentPlayer:
+        currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+    });
+
     return {
-      gameId: game.id,
-      creator: {
-        id: creator.id,
-        nick: creator.nick,
-        email: creator.email,
-      },
-      oponent: {
-        id: oponent.id,
-        nick: oponent.nick,
-        email: oponent.email,
-      },
+      notifiedPlayer: savedGame.currentPlayer,
+      gameData: savedGame,
     };
   }
 }

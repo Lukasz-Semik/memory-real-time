@@ -34,11 +34,11 @@ export const Header = ({ gameState }: Props) => {
   return (
     <Wrapper>
       <Creator>
-        {gameState.creator.nick}: {gameState.creatorScore}
+        {gameState.creator.nick}: {gameState.score.creator}
       </Creator>
 
       <Oponent>
-        {gameState.oponent.nick}: {gameState.oponentScore}
+        {gameState.oponent.nick}: {gameState.score.oponent}
       </Oponent>
     </Wrapper>
   );

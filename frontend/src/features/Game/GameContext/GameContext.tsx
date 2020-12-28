@@ -9,12 +9,13 @@ import {
   notifyWarning,
 } from 'src/components/Elements/ToastElement';
 
-import { GameState } from '../types';
+import { GameState, InvitationState } from '../types';
 import { GameInvitationToast } from './GameInvitationToast';
 import { useGameInvitation } from './useGameInvitation';
 
 interface ContextValues {
   gameState?: GameState;
+  invitationState?: InvitationState;
   createdGameId?: string;
   createGame: (
     options?: MutationFunctionOptions<any, Record<string, any>>
@@ -30,6 +31,7 @@ export const GameContextProvider = ({
   children,
 }: React.PropsWithChildren<{}>) => {
   const [gameState, setGameState] = useState<GameState>();
+  const [invitationState, setInvitationState] = useState<InvitationState>();
   const toastIdRef = useRef<string | number>(null);
   const history = useHistory();
 
@@ -48,19 +50,23 @@ export const GameContextProvider = ({
 
   useEffect(() => {
     if (gameInvitatioData) {
-      setGameState(gameInvitatioData);
+      setGameState(gameInvitatioData.gameData);
+      setInvitationState({
+        message: gameInvitatioData.message,
+        invitationResponse: gameInvitatioData.invitationResponse,
+      });
 
       if (gameInvitatioData.invitationResponse === InvitationResponse.Invited) {
         toastIdRef.current = notifyWarning(
           <GameInvitationToast
             message={gameInvitatioData.message}
             confirm={() =>
-              confirmGame(gameInvitatioData.gameId).then(
+              confirmGame(gameInvitatioData.gameData.id).then(
                 dismissConfirmationToast
               )
             }
             reject={() =>
-              rejectGame(gameInvitatioData.gameId).then(
+              rejectGame(gameInvitatioData.gameData.id).then(
                 dismissConfirmationToast
               )
             }
@@ -76,6 +82,7 @@ export const GameContextProvider = ({
         InvitationResponse.InvitationCancelled
       ) {
         setGameState(undefined);
+        setInvitationState(undefined);
         dismissConfirmationToast();
         notifyError('Game has been dismissed');
       }
@@ -92,6 +99,7 @@ export const GameContextProvider = ({
     <GameContext.Provider
       value={{
         gameState,
+        invitationState,
         createGame,
         rejectGame,
         cancelGame,

@@ -1,6 +1,6 @@
 import { Player } from './player';
 
-enum TileName {
+export enum TileName {
   A = 'A',
   B = 'B',
   C = 'C',
@@ -58,7 +58,7 @@ export const defaultTiles: Tiles = [
     markedBy: null,
   },
   {
-    id: `${TileName.B}-1`,
+    id: `${TileName.C}-1`,
     name: TileName.C,
     markedBy: null,
   },
