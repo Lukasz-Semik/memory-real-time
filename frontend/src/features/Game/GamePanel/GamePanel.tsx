@@ -6,6 +6,7 @@ import { LoaderFullScreenElement } from 'src/components/Elements/LoaderFullScree
 
 import { GameContext } from '../GameContext/GameContext';
 import { GameState } from '../types';
+import { Board } from './Board/Board';
 import { GET_GAME_DATA } from './gql';
 import { Header } from './Header/Header';
 
@@ -36,6 +37,13 @@ export const GamePanel = () => {
   return loading ? (
     <LoaderFullScreenElement />
   ) : (
-    <div>{isGameInitialized && <Header />}</div>
+    <div>
+      {isGameInitialized && (
+        <>
+          <Header />
+          <Board />
+        </>
+      )}
+    </div>
   );
 };

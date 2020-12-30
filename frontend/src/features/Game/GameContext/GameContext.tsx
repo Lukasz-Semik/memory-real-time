@@ -17,6 +17,7 @@ interface ContextValues {
   rejectGame: (gameId: string) => Promise<void>;
   cancelGame: () => Promise<void>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  markTile: (tileId: string) => Promise<void>;
 }
 
 export const GameContext = React.createContext({} as ContextValues);
@@ -36,8 +37,10 @@ export const GameContextProvider = ({
     []
   );
 
-  useOngoingGame(isGameInitialized, providedGameState =>
-    setGameState(providedGameState)
+  const { markTile } = useOngoingGame(
+    isGameInitialized,
+    gameState?.id,
+    providedGameState => setGameState(providedGameState)
   );
 
   const {
@@ -59,6 +62,7 @@ export const GameContextProvider = ({
         cancelGame,
         setGameState,
         createdGameId,
+        markTile,
       }}
     >
       {children}
