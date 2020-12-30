@@ -81,3 +81,34 @@ export const CANCEL_GAME_INVITATION = gql`
     cancelGameInvitation(gameId: $gameId)
   }
 `;
+
+export const GAME_CHANGED_SUBSCRIPTION = gql`
+  subscription gameChanged($userId: String!, $gameId: String!) {
+    gameChanged(userId: $userId, gameId: $gameId) {
+      gameData {
+        id
+        currentPlayer
+        roundCount
+        tiles {
+          markedBy
+          id
+          name
+        }
+        score {
+          creator
+          oponent
+        }
+        oponent {
+          id
+          nick
+          email
+        }
+        creator {
+          id
+          nick
+          email
+        }
+      }
+    }
+  }
+`;

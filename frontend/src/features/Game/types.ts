@@ -19,3 +19,8 @@ export interface InvitationData {
 }
 
 export type InvitationState = Omit<InvitationData, 'gameData'>;
+
+export interface GameChangedData {
+  gameData: GameState;
+  notifiedPlayer: Player;
+}

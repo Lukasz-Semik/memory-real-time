@@ -12,7 +12,9 @@ import { Header } from './Header/Header';
 export const GamePanel = () => {
   const match = useRouteMatch<{ gameId: string }>();
 
-  const { gameState, setGameState } = useContext(GameContext);
+  const { isGameInitialized, setGameState, initilizeGame } = useContext(
+    GameContext
+  );
 
   const [fetch, { data, loading }] = useLazyQuery<{
     getGame: { gameData: GameState };
@@ -27,12 +29,13 @@ export const GamePanel = () => {
   useEffect(() => {
     if (data) {
       setGameState(data.getGame.gameData);
+      initilizeGame();
     }
-  }, [data, setGameState]);
+  }, [data, setGameState, initilizeGame]);
 
   return loading ? (
     <LoaderFullScreenElement />
   ) : (
-    <div>{gameState && <Header gameState={gameState} />}</div>
+    <div>{isGameInitialized && <Header />}</div>
   );
 };

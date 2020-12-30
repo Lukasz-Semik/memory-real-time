@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { styles } from 'src/styles';
 
-import { GameState } from '../../types';
+import { usePlayers } from '../usePlayers';
 
 const Wrapper = styled.nav`
   display: flex;
@@ -15,31 +15,29 @@ const Wrapper = styled.nav`
   ${styles.helpers.orangeGradient};
 `;
 
-const Creator = styled.div`
+const CurrentPlayer = styled.div`
   color: ${styles.colors.mainMint};
   font-size: ${rem(35)};
   font-weight: 700;
   padding: 0 ${rem(20)};
 `;
 
-const Oponent = styled(Creator)`
+const SecondPlayer = styled(CurrentPlayer)`
   color: ${styles.colors.mainRed};
 `;
 
-interface Props {
-  gameState: GameState;
-}
+export const Header = () => {
+  const { currentPlayer, secondPlayer } = usePlayers();
 
-export const Header = ({ gameState }: Props) => {
   return (
     <Wrapper>
-      <Creator>
-        {gameState.creator.nick}: {gameState.score.creator}
-      </Creator>
+      <CurrentPlayer>
+        {currentPlayer.nick}: {currentPlayer.score}
+      </CurrentPlayer>
 
-      <Oponent>
-        {gameState.oponent.nick}: {gameState.score.oponent}
-      </Oponent>
+      <SecondPlayer>
+        {secondPlayer.nick}: {secondPlayer.score}
+      </SecondPlayer>
     </Wrapper>
   );
 };
