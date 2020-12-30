@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 
 import { GameContext } from '../../GameContext/GameContext';
+import { usePlayers } from '../usePlayers';
 
 export const Board = () => {
   const { gameState, markTile } = useContext(GameContext);
+  const { currentUserPlayer } = usePlayers();
 
   return (
     <div>
@@ -14,6 +16,7 @@ export const Board = () => {
             backgroundColor: tile.markedBy ? 'green' : 'transparent',
           }}
           key={tile.id}
+          disabled={!currentUserPlayer.isPlaying}
           onClick={() => markTile(tile.id)}
         >
           <div>{tile.name}</div>

@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { InvitationResponse, Player, Score } from 'global-types';
+import { InvitationResponse, PlayerRole, Score } from 'global-types';
 
 import { UserDto } from 'src/modules/user/dto/user.dto';
 
@@ -7,7 +7,7 @@ import { UserDto } from 'src/modules/user/dto/user.dto';
 export class BoardDto {
   @Field(type => String) readonly id: string;
   @Field(type => String) readonly name: string;
-  @Field(type => String, { nullable: true }) readonly markedBy: Player;
+  @Field(type => String, { nullable: true }) readonly markedBy: PlayerRole;
 }
 
 @ObjectType()
@@ -22,7 +22,7 @@ export class GameDataDto {
   @Field(type => UserDto) readonly oponent: UserDto;
   @Field(type => UserDto) readonly creator: UserDto;
   @Field(type => Number) readonly roundCount: number;
-  @Field(type => String) readonly currentPlayer: Player;
+  @Field(type => String) readonly currentPlayer: PlayerRole;
   @Field(type => ScoreDto) readonly score: Score;
   @Field(type => String, { nullable: true }) readonly firstTileShot:
     | string
@@ -33,7 +33,7 @@ export class GameDataDto {
 @ObjectType()
 export class GameChangedDataDto {
   @Field(type => GameDataDto) readonly gameData: GameDataDto;
-  @Field(type => String) readonly notifiedPlayer: Player;
+  @Field(type => String) readonly notifiedPlayer: PlayerRole;
 }
 
 @ObjectType()

@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { defaultTiles, Player } from 'global-types';
+import { defaultTiles, PlayerRole } from 'global-types';
 import { random, shuffle } from 'lodash';
 import { Repository } from 'typeorm';
 
@@ -16,6 +16,11 @@ export class GameService {
     @InjectRepository(GameEntity)
     private readonly gameRepository: Repository<GameEntity>
   ) {}
+
+  private switchPlayers = (currentPlayer: PlayerRole) =>
+    currentPlayer === PlayerRole.Creator
+      ? PlayerRole.Oponent
+      : PlayerRole.Creator;
 
   async getGameData(gameId: string, userId: string) {
     const game = await this.gameRepository.findOne(gameId);
@@ -47,7 +52,7 @@ export class GameService {
 
     const createdGame = await this.gameRepository.save({
       ...newGame,
-      currentPlayer: [Player.Creator, Player.Oponent][random(0, 1)],
+      currentPlayer: [PlayerRole.Creator, PlayerRole.Oponent][random(0, 1)],
       tiles: shuffle(defaultTiles),
       oponent: {
         id: oponent.id,
@@ -104,7 +109,9 @@ export class GameService {
 
       return {
         notifiedPlayer:
-          currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+          currentPlayer === PlayerRole.Creator
+            ? PlayerRole.Oponent
+            : PlayerRole.Creator,
         gameData: savedGame,
       };
     }
@@ -121,8 +128,7 @@ export class GameService {
         tiles: newTiles,
         firstTileShot: null,
         roundCount: game.roundCount + 1,
-        currentPlayer:
-          currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+        currentPlayer: this.switchPlayers(currentPlayer),
       });
 
       return {
@@ -146,8 +152,7 @@ export class GameService {
         ...game.score,
         [currentPlayer]: currentPlayerScore + 1,
       },
-      currentPlayer:
-        currentPlayer === Player.Creator ? Player.Oponent : Player.Creator,
+      currentPlayer: this.switchPlayers(currentPlayer),
     });
 
     return {

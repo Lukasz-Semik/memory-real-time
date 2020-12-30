@@ -1,4 +1,10 @@
-import { defaultTiles, Player, PlayerData, Score, Tiles } from 'global-types';
+import {
+  defaultTiles,
+  PlayerData,
+  PlayerRole,
+  Score,
+  Tiles,
+} from 'global-types';
 import {
   Column,
   CreateDateColumn,
@@ -30,7 +36,7 @@ export class GameEntity {
   roundCount: number;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  currentPlayer: Player;
+  currentPlayer: PlayerRole;
 
   @Column({ type: 'int', default: 0 })
   creatorScore: number;
