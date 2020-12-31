@@ -12,15 +12,15 @@ import {
   notifyWarning,
 } from 'src/components/Elements/ToastElement';
 
-import { GameState, InvitationData, InvitationState } from '../types';
-import { GameInvitationToast } from './GameInvitationToast';
 import {
   CANCEL_GAME_INVITATION,
   CONFIRM_GAME_INVITATION,
   CREATE_GAME,
   GAME_INVITATION_SUBSCRIPTION,
   REJECT_GAME_INVITATION,
-} from './gql';
+} from '../gql';
+import { GameState, InvitationData, InvitationState } from '../types';
+import { GameInvitationToast } from './GameInvitationToast';
 
 export type SetStates = (
   gameState?: GameState,

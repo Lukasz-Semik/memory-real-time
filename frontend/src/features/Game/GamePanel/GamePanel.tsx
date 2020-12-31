@@ -5,9 +5,9 @@ import { useLazyQuery } from '@apollo/client';
 import { LoaderFullScreenElement } from 'src/components/Elements/LoaderFullScreenElement/LoaderFullScreenElement';
 
 import { GameContext } from '../GameContext/GameContext';
+import { GET_GAME_DATA } from '../gql';
 import { GameState } from '../types';
 import { Board } from './Board/Board';
-import { GET_GAME_DATA } from './gql';
 import { Header } from './Header/Header';
 
 export const GamePanel = () => {

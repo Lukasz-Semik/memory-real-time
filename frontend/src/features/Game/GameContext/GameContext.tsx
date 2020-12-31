@@ -21,8 +21,6 @@ interface ContextValues {
   boardInternalState: BoardInternalState;
 }
 
-// TODO: boardInternalState <{ isBoardDisabled, notMatchedTileId }>
-
 export const GameContext = React.createContext({} as ContextValues);
 
 export const GameContextProvider = ({
@@ -42,6 +40,7 @@ export const GameContextProvider = ({
     },
     []
   );
+
   const { markTile } = useOngoingGame({
     isGameInitialized,
     setGameState,

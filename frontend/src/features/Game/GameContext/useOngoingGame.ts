@@ -6,9 +6,9 @@ import { last } from 'lodash';
 
 import { useGetCurrentUser } from 'src/store/users/selectors';
 
-import { MARK_TILE } from '../GamePanel/gql';
+import { MARK_TILE } from '../gql';
+import { GAME_CHANGED_SUBSCRIPTION } from '../gql';
 import { BoardInternalState, GameChangedData, GameState } from '../types';
-import { GAME_CHANGED_SUBSCRIPTION } from './gql';
 
 interface Config {
   isGameInitialized: boolean;
@@ -47,7 +47,6 @@ export const useOngoingGame = ({
 
   const markTile = useCallback(
     async (tileId: string) => {
-      // setIsBoardDisabled(true);
       setBoartInternalState(prevState => ({
         ...prevState,
         isBoardDisabled: true,
