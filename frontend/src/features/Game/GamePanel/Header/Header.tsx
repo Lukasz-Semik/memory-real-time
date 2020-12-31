@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
 import { styles } from 'src/styles';
+import { LoaderElement } from 'src/components/Elements/LoaderElement/LoaderElement';
 
-import { GameState } from '../../types';
+import { GameContext } from '../../GameContext/GameContext';
+import { usePlayers } from '../usePlayers';
 
 const Wrapper = styled.nav`
   display: flex;
@@ -13,33 +15,70 @@ const Wrapper = styled.nav`
   height: ${rem(80)};
   box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
   ${styles.helpers.orangeGradient};
+  font-weight: 700;
 `;
 
-const Creator = styled.div`
+const CurrentUserPlayer = styled.div`
+  display: flex;
+  align-items: center;
   color: ${styles.colors.mainMint};
   font-size: ${rem(35)};
-  font-weight: 700;
   padding: 0 ${rem(20)};
 `;
 
-const Oponent = styled(Creator)`
+const ContentItemWrapper = styled.span`
+  margin-right: ${rem(10)};
+`;
+
+const SmallText = styled.div`
+  font-size: ${rem(16)};
+  color: ${styles.colors.black};
+`;
+
+const CenteredText = styled.div`
+  text-align: center;
+`;
+
+const RoundDisplay = styled(CenteredText)`
+  font-size: ${rem(20)};
+  margin-bottom: ${rem(5)};
+`;
+
+const SecondPlayer = styled(CurrentUserPlayer)`
   color: ${styles.colors.mainRed};
 `;
 
-interface Props {
-  gameState: GameState;
-}
+export const Header = () => {
+  const { gameState } = useContext(GameContext);
+  const { currentUserPlayer, secondPlayer, currentPlayerNick } = usePlayers();
 
-export const Header = ({ gameState }: Props) => {
   return (
     <Wrapper>
-      <Creator>
-        {gameState.creator.nick}: {gameState.score.creator}
-      </Creator>
+      <CurrentUserPlayer>
+        <ContentItemWrapper>
+          {currentUserPlayer.nick}: {currentUserPlayer.score}
+        </ContentItemWrapper>
 
-      <Oponent>
-        {gameState.oponent.nick}: {gameState.score.oponent}
-      </Oponent>
+        {currentUserPlayer.isPlaying ? (
+          <SmallText>Your turn</SmallText>
+        ) : (
+          <LoaderElement isVisible size={30} />
+        )}
+      </CurrentUserPlayer>
+
+      <div>
+        <RoundDisplay>{`Round: ${gameState.roundCount}`}</RoundDisplay>
+        <CenteredText>{`${currentPlayerNick}'s turn`}</CenteredText>
+      </div>
+
+      <SecondPlayer>
+        {secondPlayer.isPlaying && (
+          <ContentItemWrapper>
+            <SmallText>Playing</SmallText>
+          </ContentItemWrapper>
+        )}
+        {secondPlayer.nick}: {secondPlayer.score}
+      </SecondPlayer>
     </Wrapper>
   );
 };

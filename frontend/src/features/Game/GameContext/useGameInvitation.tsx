@@ -1,26 +1,36 @@
-import { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useMutation, useSubscription } from '@apollo/client';
+import { InvitationResponse } from 'global-types';
 
 import { useGetCurrentUser } from 'src/store/users/selectors';
 import { routes } from 'src/constants/routes';
 import {
   notifyError,
   notifySuccess,
+  notifyWarning,
 } from 'src/components/Elements/ToastElement';
 
-import { InvitationData } from '../types';
 import {
   CANCEL_GAME_INVITATION,
   CONFIRM_GAME_INVITATION,
   CREATE_GAME,
   GAME_INVITATION_SUBSCRIPTION,
   REJECT_GAME_INVITATION,
-} from './gql';
+} from '../gql';
+import { GameState, InvitationData, InvitationState } from '../types';
+import { GameInvitationToast } from './GameInvitationToast';
 
-export const useGameInvitation = () => {
+export type SetStates = (
+  gameState?: GameState,
+  invitationState?: InvitationState
+) => void;
+
+export const useGameInvitation = (setStates: SetStates) => {
   const currentUser = useGetCurrentUser();
   const history = useHistory();
+  const toastIdRef = useRef<string | number>(null);
 
   const [createGame, { data: createdGameResponse }] = useMutation<{
     createGame: InvitationData;
@@ -64,6 +74,56 @@ export const useGameInvitation = () => {
     },
     [history, confirmGameInvitation]
   );
+
+  const dismissConfirmationToast = useCallback(() => {
+    toast.dismiss(toastIdRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (gameInvitatioData) {
+      setStates(gameInvitatioData.gameData, {
+        message: gameInvitatioData.message,
+        invitationResponse: gameInvitatioData.invitationResponse,
+      });
+
+      if (gameInvitatioData.invitationResponse === InvitationResponse.Invited) {
+        toastIdRef.current = notifyWarning(
+          <GameInvitationToast
+            message={gameInvitatioData.message}
+            confirm={() =>
+              confirmGame(gameInvitatioData.gameData.id).then(
+                dismissConfirmationToast
+              )
+            }
+            reject={() =>
+              rejectGame(gameInvitatioData.gameData.id).then(
+                dismissConfirmationToast
+              )
+            }
+          />,
+          {
+            autoClose: false,
+          }
+        );
+      }
+
+      if (
+        gameInvitatioData.invitationResponse ===
+        InvitationResponse.InvitationCancelled
+      ) {
+        setStates();
+        dismissConfirmationToast();
+        notifyError('Game has been dismissed');
+      }
+    }
+  }, [
+    gameInvitatioData,
+    dismissConfirmationToast,
+    confirmGame,
+    rejectGame,
+    history,
+    setStates,
+  ]);
 
   return {
     createGame,

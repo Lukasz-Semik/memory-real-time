@@ -1,4 +1,4 @@
-import { Player } from './player';
+import { PlayerRole } from './player';
 
 export enum TileName {
   A = 'A',
@@ -14,7 +14,7 @@ export enum TileName {
 export interface Tile<T = string> {
   name: T;
   id: string;
-  markedBy: Player | null;
+  markedBy: PlayerRole | null;
 }
 
 export type Tiles = [
@@ -118,3 +118,9 @@ export const defaultTiles: Tiles = [
     markedBy: null,
   },
 ];
+
+export enum MatchResult {
+  FirstShot = 'firstShot',
+  NotMatched = 'notMatched',
+  Matched = 'matched',
+}

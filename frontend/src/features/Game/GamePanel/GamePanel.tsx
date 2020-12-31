@@ -5,14 +5,17 @@ import { useLazyQuery } from '@apollo/client';
 import { LoaderFullScreenElement } from 'src/components/Elements/LoaderFullScreenElement/LoaderFullScreenElement';
 
 import { GameContext } from '../GameContext/GameContext';
+import { GET_GAME_DATA } from '../gql';
 import { GameState } from '../types';
-import { GET_GAME_DATA } from './gql';
+import { Board } from './Board/Board';
 import { Header } from './Header/Header';
 
 export const GamePanel = () => {
   const match = useRouteMatch<{ gameId: string }>();
 
-  const { gameState, setGameState } = useContext(GameContext);
+  const { isGameInitialized, setGameState, initilizeGame } = useContext(
+    GameContext
+  );
 
   const [fetch, { data, loading }] = useLazyQuery<{
     getGame: { gameData: GameState };
@@ -21,18 +24,28 @@ export const GamePanel = () => {
   });
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    if (!isGameInitialized) {
+      fetch();
+    }
+  }, [fetch, isGameInitialized]);
 
   useEffect(() => {
-    if (data) {
+    if (data && !isGameInitialized) {
       setGameState(data.getGame.gameData);
+      initilizeGame();
     }
-  }, [data, setGameState]);
+  }, [data, setGameState, initilizeGame, isGameInitialized]);
 
   return loading ? (
     <LoaderFullScreenElement />
   ) : (
-    <div>{gameState && <Header gameState={gameState} />}</div>
+    <div>
+      {isGameInitialized && (
+        <>
+          <Header />
+          <Board />
+        </>
+      )}
+    </div>
   );
 };
