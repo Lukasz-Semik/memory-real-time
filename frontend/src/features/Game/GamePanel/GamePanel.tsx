@@ -24,15 +24,17 @@ export const GamePanel = () => {
   });
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    if (!isGameInitialized) {
+      fetch();
+    }
+  }, [fetch, isGameInitialized]);
 
   useEffect(() => {
-    if (data) {
+    if (data && !isGameInitialized) {
       setGameState(data.getGame.gameData);
       initilizeGame();
     }
-  }, [data, setGameState, initilizeGame]);
+  }, [data, setGameState, initilizeGame, isGameInitialized]);
 
   return loading ? (
     <LoaderFullScreenElement />

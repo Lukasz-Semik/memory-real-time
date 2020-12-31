@@ -34,6 +34,8 @@ export const GET_GAME_DATA = gql`
 export const MARK_TILE = gql`
   mutation markTile($tileId: String!, $gameId: String!) {
     markTile(tileId: $tileId, gameId: $gameId) {
+      matchResult
+      notMatchedTileId
       gameData {
         id
         currentPlayer

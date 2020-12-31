@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { defaultTiles, PlayerRole } from 'global-types';
+import { defaultTiles, MatchResult, PlayerRole } from 'global-types';
 import { random, shuffle } from 'lodash';
 import { Repository } from 'typeorm';
 
@@ -108,6 +108,8 @@ export class GameService {
       });
 
       return {
+        notMatchedTileId: null,
+        matchResult: MatchResult.FirstShot,
         notifiedPlayer:
           currentPlayer === PlayerRole.Creator
             ? PlayerRole.Oponent
@@ -132,6 +134,8 @@ export class GameService {
       });
 
       return {
+        notMatchedTileId: tileId,
+        matchResult: MatchResult.NotMatched,
         notifiedPlayer: savedGame.currentPlayer,
         gameData: savedGame,
       };
@@ -156,6 +160,8 @@ export class GameService {
     });
 
     return {
+      notMatchedTileId: null,
+      matchResult: MatchResult.Matched,
       notifiedPlayer: savedGame.currentPlayer,
       gameData: savedGame,
     };

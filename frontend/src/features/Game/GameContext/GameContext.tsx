@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { FetchResult, MutationFunctionOptions } from '@apollo/client';
 
-import { GameState, InvitationState } from '../types';
+import { BoardInternalState, GameState, InvitationState } from '../types';
 import { SetStates, useGameInvitation } from './useGameInvitation';
 import { useOngoingGame } from './useOngoingGame';
 
@@ -18,7 +18,10 @@ interface ContextValues {
   cancelGame: () => Promise<void>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
   markTile: (tileId: string) => Promise<void>;
+  boardInternalState: BoardInternalState;
 }
+
+// TODO: boardInternalState <{ isBoardDisabled, notMatchedTileId }>
 
 export const GameContext = React.createContext({} as ContextValues);
 
@@ -27,6 +30,9 @@ export const GameContextProvider = ({
 }: React.PropsWithChildren<{}>) => {
   const [isGameInitialized, setIsGameInitialized] = useState(false);
   const [gameState, setGameState] = useState<GameState>();
+  const [boardInternalState, setBoartInternalState] = useState<
+    BoardInternalState
+  >({ isBoardDisabled: false, notMatchedTileId: null });
   const [invitationState, setInvitationState] = useState<InvitationState>();
 
   const setStates = useCallback<SetStates>(
@@ -36,12 +42,12 @@ export const GameContextProvider = ({
     },
     []
   );
-
-  const { markTile } = useOngoingGame(
+  const { markTile } = useOngoingGame({
     isGameInitialized,
-    gameState?.id,
-    providedGameState => setGameState(providedGameState)
-  );
+    setGameState,
+    setBoartInternalState,
+    gameId: gameState?.id,
+  });
 
   const {
     createGame,
@@ -63,6 +69,7 @@ export const GameContextProvider = ({
         setGameState,
         createdGameId,
         markTile,
+        boardInternalState,
       }}
     >
       {children}

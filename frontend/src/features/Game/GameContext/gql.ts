@@ -85,6 +85,8 @@ export const CANCEL_GAME_INVITATION = gql`
 export const GAME_CHANGED_SUBSCRIPTION = gql`
   subscription gameChanged($userId: String!, $gameId: String!) {
     gameChanged(userId: $userId, gameId: $gameId) {
+      notMatchedTileId
+      matchResult
       gameData {
         id
         currentPlayer

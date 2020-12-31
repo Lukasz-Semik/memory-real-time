@@ -118,3 +118,9 @@ export const defaultTiles: Tiles = [
     markedBy: null,
   },
 ];
+
+export enum MatchResult {
+  FirstShot = 'firstShot',
+  NotMatched = 'notMatched',
+  Matched = 'matched',
+}

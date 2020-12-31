@@ -1,5 +1,6 @@
 import {
   InvitationResponse,
+  MatchResult,
   PlayerData,
   PlayerRole,
   Score,
@@ -41,4 +42,11 @@ export type InvitationState = Omit<InvitationData, 'gameData'>;
 export interface GameChangedData {
   gameData: GameState;
   notifiedPlayer: PlayerRole;
+  matchResult: MatchResult;
+  notMatchedTileId: string;
+}
+
+export interface BoardInternalState {
+  isBoardDisabled: boolean;
+  notMatchedTileId: string | null;
 }

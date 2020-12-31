@@ -1,5 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { InvitationResponse, PlayerRole, Score } from 'global-types';
+import {
+  InvitationResponse,
+  MatchResult,
+  PlayerRole,
+  Score,
+} from 'global-types';
 
 import { UserDto } from 'src/modules/user/dto/user.dto';
 
@@ -33,7 +38,11 @@ export class GameDataDto {
 @ObjectType()
 export class GameChangedDataDto {
   @Field(type => GameDataDto) readonly gameData: GameDataDto;
+  @Field(type => String) readonly matchResult: MatchResult;
   @Field(type => String) readonly notifiedPlayer: PlayerRole;
+  @Field(type => String, { nullable: true }) readonly notMatchedTileId:
+    | string
+    | null;
 }
 
 @ObjectType()

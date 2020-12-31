@@ -1,24 +1,35 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMutation, useSubscription } from '@apollo/client';
+import { MatchResult } from 'global-types';
 import { last } from 'lodash';
 
 import { useGetCurrentUser } from 'src/store/users/selectors';
 
 import { MARK_TILE } from '../GamePanel/gql';
-import { GameChangedData, GameState } from '../types';
+import { BoardInternalState, GameChangedData, GameState } from '../types';
 import { GAME_CHANGED_SUBSCRIPTION } from './gql';
 
-export const useOngoingGame = (
-  isGameInitialized: boolean,
-  gameId: string,
-  setGameState: (gameState: GameState) => void
-) => {
+interface Config {
+  isGameInitialized: boolean;
+  gameId: string;
+  setBoartInternalState: React.Dispatch<
+    React.SetStateAction<BoardInternalState>
+  >;
+  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+}
+
+export const useOngoingGame = ({
+  isGameInitialized,
+  gameId,
+  setBoartInternalState,
+  setGameState,
+}: Config) => {
   const location = useLocation();
   const currentUser = useGetCurrentUser();
 
   const [markTileMutation, { data: markTileResponse }] = useMutation<{
-    markTile: { gameData: GameState };
+    markTile: GameChangedData;
   }>(MARK_TILE);
 
   const { data: gameChangedResponse } = useSubscription<{
@@ -31,11 +42,17 @@ export const useOngoingGame = (
     skip: !isGameInitialized,
   });
 
-  const gameData = gameChangedResponse?.gameChanged?.gameData;
-  const markTileData = markTileResponse?.markTile?.gameData;
+  const gameChangedData = gameChangedResponse?.gameChanged;
+  const markTileData = markTileResponse?.markTile;
 
   const markTile = useCallback(
     async (tileId: string) => {
+      // setIsBoardDisabled(true);
+      setBoartInternalState(prevState => ({
+        ...prevState,
+        isBoardDisabled: true,
+      }));
+
       await markTileMutation({
         variables: {
           tileId: tileId,
@@ -43,20 +60,53 @@ export const useOngoingGame = (
         },
       });
     },
-    [gameId, markTileMutation]
+    [gameId, markTileMutation, setBoartInternalState]
+  );
+
+  const update = useCallback(
+    (gameState: GameState) => {
+      setGameState(gameState);
+      setBoartInternalState({
+        isBoardDisabled: false,
+        notMatchedTileId: null,
+      });
+    },
+    [setGameState, setBoartInternalState]
   );
 
   useEffect(() => {
-    if (gameData) {
-      setGameState(gameData);
+    if (gameChangedData) {
+      if (gameChangedData.matchResult === MatchResult.NotMatched) {
+        setBoartInternalState({
+          isBoardDisabled: true,
+          notMatchedTileId: gameChangedData.notMatchedTileId,
+        });
+
+        setTimeout(() => {
+          update(gameChangedData.gameData);
+        }, 3000);
+      } else {
+        update(gameChangedData.gameData);
+      }
     }
-  }, [gameData, setGameState]);
+  }, [gameChangedData, update, setBoartInternalState]);
 
   useEffect(() => {
     if (markTileData) {
-      setGameState(markTileData);
+      if (markTileData.matchResult === MatchResult.NotMatched) {
+        setBoartInternalState({
+          isBoardDisabled: true,
+          notMatchedTileId: markTileData.notMatchedTileId,
+        });
+
+        setTimeout(() => {
+          update(markTileData.gameData);
+        }, 3000);
+      } else {
+        update(markTileData.gameData);
+      }
     }
-  }, [markTileData, setGameState]);
+  }, [markTileData, setBoartInternalState, update]);
 
   return {
     markTile,

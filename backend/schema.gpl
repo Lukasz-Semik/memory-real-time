@@ -50,7 +50,9 @@ type GameDataDto {
 
 type GameChangedDataDto {
   gameData: GameDataDto!
+  matchResult: String!
   notifiedPlayer: String!
+  notMatchedTileId: String
 }
 
 type GameInvitationDataDto {
