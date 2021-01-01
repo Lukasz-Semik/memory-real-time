@@ -49,4 +49,5 @@ export interface GameChangedData {
 export interface BoardInternalState {
   isBoardDisabled: boolean;
   notMatchedTileId: string | null;
+  matchResult?: MatchResult;
 }

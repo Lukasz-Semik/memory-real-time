@@ -8,11 +8,13 @@ import { LoaderElement } from 'src/components/Elements/LoaderElement/LoaderEleme
 import { GameContext } from '../../GameContext/GameContext';
 import { usePlayers } from '../usePlayers';
 
+export const headerHeight = 80;
+
 const Wrapper = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: ${rem(80)};
+  height: ${rem(headerHeight)};
   box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
   ${styles.helpers.orangeGradient};
   font-weight: 700;
@@ -24,6 +26,12 @@ const CurrentUserPlayer = styled.div`
   color: ${styles.colors.mainMint};
   font-size: ${rem(35)};
   padding: 0 ${rem(20)};
+`;
+
+const CenterDisplay = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const ContentItemWrapper = styled.span`
@@ -66,10 +74,10 @@ export const Header = () => {
         )}
       </CurrentUserPlayer>
 
-      <div>
+      <CenterDisplay>
         <RoundDisplay>{`Round: ${gameState.roundCount}`}</RoundDisplay>
         <CenteredText>{`${currentPlayerNick}'s turn`}</CenteredText>
-      </div>
+      </CenterDisplay>
 
       <SecondPlayer>
         {secondPlayer.isPlaying && (
