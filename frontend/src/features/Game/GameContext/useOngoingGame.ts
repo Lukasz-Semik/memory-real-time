@@ -63,11 +63,12 @@ export const useOngoingGame = ({
   );
 
   const update = useCallback(
-    (gameState: GameState) => {
+    (gameState: GameState, matchResult: MatchResult) => {
       setGameState(gameState);
       setBoartInternalState({
         isBoardDisabled: false,
         notMatchedTileId: null,
+        matchResult,
       });
     },
     [setGameState, setBoartInternalState]
@@ -79,13 +80,14 @@ export const useOngoingGame = ({
         setBoartInternalState({
           isBoardDisabled: true,
           notMatchedTileId: gameChangedData.notMatchedTileId,
+          matchResult: gameChangedData.matchResult,
         });
 
         setTimeout(() => {
-          update(gameChangedData.gameData);
+          update(gameChangedData.gameData, gameChangedData.matchResult);
         }, 3000);
       } else {
-        update(gameChangedData.gameData);
+        update(gameChangedData.gameData, gameChangedData.matchResult);
       }
     }
   }, [gameChangedData, update, setBoartInternalState]);
@@ -96,13 +98,14 @@ export const useOngoingGame = ({
         setBoartInternalState({
           isBoardDisabled: true,
           notMatchedTileId: markTileData.notMatchedTileId,
+          matchResult: markTileData.matchResult,
         });
 
         setTimeout(() => {
-          update(markTileData.gameData);
+          update(markTileData.gameData, markTileData.matchResult);
         }, 3000);
       } else {
-        update(markTileData.gameData);
+        update(markTileData.gameData, markTileData.matchResult);
       }
     }
   }, [markTileData, setBoartInternalState, update]);

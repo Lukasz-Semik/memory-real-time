@@ -141,6 +141,8 @@ export class GameService {
       };
     }
 
+    const isGameOver = newTiles.filter(tile => !tile.markedBy).length === 1;
+
     const currentPlayerScore = game.score[currentPlayer];
 
     nextTile.markedBy = currentPlayer;
@@ -152,6 +154,7 @@ export class GameService {
       tiles: newTiles,
       firstTileShot: null,
       roundCount: game.roundCount + 1,
+      isGameOver,
       score: {
         ...game.score,
         [currentPlayer]: currentPlayerScore + 1,

@@ -17,6 +17,7 @@ export interface GameState {
   currentPlayer: PlayerRole;
   score: Score;
   tiles: Tiles;
+  isGameOver: boolean;
 }
 
 export interface PlayerDisplaydData extends Omit<PlayerData, 'email'> {
@@ -49,4 +50,5 @@ export interface GameChangedData {
 export interface BoardInternalState {
   isBoardDisabled: boolean;
   notMatchedTileId: string | null;
+  matchResult?: MatchResult;
 }

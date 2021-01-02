@@ -43,6 +43,7 @@ type GameDataDto {
   creator: UserDto!
   roundCount: Float!
   currentPlayer: String!
+  isGameOver: Boolean!
   score: ScoreDto!
   firstTileShot: String
   tiles: [BoardDto!]!

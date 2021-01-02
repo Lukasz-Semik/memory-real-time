@@ -28,6 +28,7 @@ export class GameDataDto {
   @Field(type => UserDto) readonly creator: UserDto;
   @Field(type => Number) readonly roundCount: number;
   @Field(type => String) readonly currentPlayer: PlayerRole;
+  @Field(type => Boolean) readonly isGameOver: boolean;
   @Field(type => ScoreDto) readonly score: Score;
   @Field(type => String, { nullable: true }) readonly firstTileShot:
     | string
