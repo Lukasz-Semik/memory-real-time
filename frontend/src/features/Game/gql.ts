@@ -9,6 +9,7 @@ export const GAME_INVITATION_SUBSCRIPTION = gql`
         id
         currentPlayer
         roundCount
+        isGameOver
         tiles {
           markedBy
           id
@@ -40,6 +41,7 @@ export const CREATE_GAME = gql`
         id
         currentPlayer
         roundCount
+        isGameOver
         tiles {
           markedBy
           id
@@ -91,6 +93,7 @@ export const GAME_CHANGED_SUBSCRIPTION = gql`
         id
         currentPlayer
         roundCount
+        isGameOver
         tiles {
           markedBy
           id
@@ -122,6 +125,7 @@ export const GET_GAME_DATA = gql`
         id
         currentPlayer
         roundCount
+        isGameOver
         tiles {
           markedBy
           id
@@ -155,6 +159,7 @@ export const MARK_TILE = gql`
         id
         currentPlayer
         roundCount
+        isGameOver
         tiles {
           markedBy
           id

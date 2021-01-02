@@ -50,6 +50,9 @@ export class GameEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   firstTileShot: string;
 
+  @Column({ type: 'bool', default: false })
+  isGameOver: boolean;
+
   @Column({
     type: 'simple-json',
     default: defaultTiles,

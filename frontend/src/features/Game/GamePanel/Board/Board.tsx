@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { styles } from 'src/styles';
 
 import { GameContext } from '../../GameContext/GameContext';
+import { OverModal } from '../OverModal/OverModal';
 import { usePlayers } from '../usePlayers';
 
 const Wrapper = styled.div`
@@ -67,39 +68,43 @@ export const Board = () => {
   const { isBoardDisabled, notMatchedTileId } = boardInternalState;
 
   return (
-    <Wrapper>
-      <ButtonsWrapper>
-        {gameState.tiles.map(tile => {
-          const isTileNotMatched = notMatchedTileId === tile.id;
-          const isTileMarked = Boolean(tile.markedBy || isTileNotMatched);
-          const isTileDisabled = isBoardDisabled || isTileMarked;
+    <>
+      <Wrapper>
+        <ButtonsWrapper>
+          {gameState.tiles.map(tile => {
+            const isTileNotMatched = notMatchedTileId === tile.id;
+            const isTileMarked = Boolean(tile.markedBy || isTileNotMatched);
+            const isTileDisabled = isBoardDisabled || isTileMarked;
 
-          const getBorderColor = () => {
-            if (isTileNotMatched) {
-              return currentUserPlayer.isPlaying
+            const getBorderColor = () => {
+              if (isTileNotMatched) {
+                return currentUserPlayer.isPlaying
+                  ? styles.colors.mainMint
+                  : styles.colors.mainRed;
+              }
+
+              return currentUserPlayer.role === tile.markedBy
                 ? styles.colors.mainMint
                 : styles.colors.mainRed;
-            }
+            };
 
-            return currentUserPlayer.role === tile.markedBy
-              ? styles.colors.mainMint
-              : styles.colors.mainRed;
-          };
+            return (
+              <Button
+                isMarked={isTileMarked}
+                borderColor={getBorderColor()}
+                key={tile.id}
+                disabled={!currentUserPlayer.isPlaying || isTileDisabled}
+                onClick={() => markTile(tile.id)}
+              >
+                <TileNameDevInd>{tile.name}</TileNameDevInd>
+                <Content isVisible={isTileMarked}>{tile.name}</Content>
+              </Button>
+            );
+          })}
+        </ButtonsWrapper>
+      </Wrapper>
 
-          return (
-            <Button
-              isMarked={isTileMarked}
-              borderColor={getBorderColor()}
-              key={tile.id}
-              disabled={!currentUserPlayer.isPlaying || isTileDisabled}
-              onClick={() => markTile(tile.id)}
-            >
-              <TileNameDevInd>{tile.name}</TileNameDevInd>
-              <Content isVisible={isTileMarked}>{tile.name}</Content>
-            </Button>
-          );
-        })}
-      </ButtonsWrapper>
-    </Wrapper>
+      {gameState.isGameOver && <OverModal />}
+    </>
   );
 };

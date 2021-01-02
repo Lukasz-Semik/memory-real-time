@@ -17,6 +17,7 @@ export interface GameState {
   currentPlayer: PlayerRole;
   score: Score;
   tiles: Tiles;
+  isGameOver: boolean;
 }
 
 export interface PlayerDisplaydData extends Omit<PlayerData, 'email'> {
